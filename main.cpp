@@ -1,6 +1,5 @@
 //finally got this working; only took 10 hours!
 //learn about time.h; apparently that's a thing
-//obviously learn about SFML, because FML if we use OpenGL
 
 #include <SFML/Graphics.hpp>
 #include<iostream>

@@ -1,6 +1,5 @@
 //
 // Created by Michael DelSole on 3/22/18.
-//
 
 #include "Player.h"
 
