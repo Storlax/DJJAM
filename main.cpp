@@ -20,9 +20,9 @@ int main()
 
     //loads textures from files, duhhh
     Texture t1,t2,t3;
-    t1.loadFromFile("C:/Users/miami/CLionProjects/untitled/images/background.png");
-    t2.loadFromFile("C:/Users/miami/CLionProjects/untitled/images/platform.png");
-    t3.loadFromFile("C:/Users/miami/CLionProjects/untitled/images/doodle.png");
+    t1.loadFromFile(R"(C:\Users\NightBot\CLionProjects\DJJAM\cmake_modules\Images\background.png)");
+    t2.loadFromFile(R"(C:\Users\NightBot\CLionProjects\DJJAM\cmake_modules\Images\platform.png)");
+    t3.loadFromFile(R"(C:\Users\NightBot\CLionProjects\DJJAM\cmake_modules\Images\doodle.png)");
 
     //declaring the different images for their respective parts in the game (the person, platform, and background)
     Sprite sBackground(t1), sPlat(t2), sPers(t3);
