@@ -4,6 +4,8 @@
 
 #include <SFML/Graphics.hpp>
 #include<iostream>
+#include "player.cpp"
+
 //this includes the standard functions in SFML's custom namespace which saves us an assload of "sf::insertCrapHere"
 using namespace sf;
 //who uses structs anymore? I guess C is useful; probably better to do this in a class; just declaring coordinates
@@ -19,13 +21,17 @@ int main()
     app.setFramerateLimit(60);
 
     //loads textures from files, duhhh
-    Texture t1,t2,t3;
-    t1.loadFromFile("C:/Users/miami/CLionProjects/untitled/images/background.png");
-    t2.loadFromFile("C:/Users/miami/CLionProjects/untitled/images/platform.png");
-    t3.loadFromFile("C:/Users/miami/CLionProjects/untitled/images/doodle.png");
+    Texture t1,t2;
+    t1.loadFromFile("/Users/Michael/Documents/COP2Projects/DJJAM/cmake_modules/Images/background.png");
+    t2.loadFromFile("/Users/Michael/Documents/COP2Projects/DJJAM/cmake_modules/Images/platform.png");
 
+    Player player;
     //declaring the different images for their respective parts in the game (the person, platform, and background)
-    Sprite sBackground(t1), sPlat(t2), sPers(t3);
+    Sprite sBackground(t1), sPlat(t2);
+    Sprite sPersL(player.t1);
+    Sprite sPersR(player.t2);
+
+    Sprite currentSprite = sPersL;
 
     //not sure what this one does; research
     point plat[20];
@@ -54,8 +60,14 @@ int main()
                 app.close();
         }
         //nice built in functions to detect key movement; ya love to see it!
-        if (Keyboard::isKeyPressed(Keyboard::Right)) x+=3;
-        if (Keyboard::isKeyPressed(Keyboard::Left)) x-=3;
+        if (Keyboard::isKeyPressed(Keyboard::Right)) {
+            currentSprite = sPersR;
+            x += 3;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Left)) {
+            currentSprite = sPersL;
+            x-=3;
+        }
 
         //good ol' gravity
         dy+=0.2;
@@ -75,10 +87,10 @@ int main()
             if ((x+50>plat[i].x) && (x+20<plat[i].x+68)
                 && (y+70>plat[i].y) && (y+70<plat[i].y+14) && (dy>0))  dy=-10;
 
-        sPers.setPosition(x,y);
+        currentSprite.setPosition(x,y);
 
         app.draw(sBackground);
-        app.draw(sPers);
+        app.draw(currentSprite);
         for (int i=0;i<10;i++)
         {
             sPlat.setPosition(plat[i].x,plat[i].y);
