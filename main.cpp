@@ -14,16 +14,16 @@ struct point
 
 int main()
 {
-    std::cout<< "wassup";
+    std::cout<< "Michael you're famous";
     //renders a window of size whatever I've declared; check parameters
-    RenderWindow app(VideoMode(400, 533), "Doodle Game!");
+    RenderWindow app(VideoMode(400, 533), "DJJAM");
     //sets framerate maximum to stop the program from seizing
     app.setFramerateLimit(60);
 
     //loads textures from files, duhhh
     Texture t1,t2;
-    t1.loadFromFile("/Users/Michael/Documents/COP2Projects/DJJAM/cmake_modules/Images/background.png");
-    t2.loadFromFile("/Users/Michael/Documents/COP2Projects/DJJAM/cmake_modules/Images/platform.png");
+    t1.loadFromFile("C:/Users/miami/CLionProjects/untitled/images/background.png");
+    t2.loadFromFile("C:/Users/miami/CLionProjects/untitled/images/platform.png");
 
     Player player;
     //declaring the different images for their respective parts in the game (the person, platform, and background)

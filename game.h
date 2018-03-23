@@ -1,5 +1,5 @@
 //
-// Created by nick on 3/22/2018.
+// Created by dick on 3/22/2018.
 //
 
 #ifndef DJJAM_GAME_H
