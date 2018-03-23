@@ -5,12 +5,11 @@
 #include <SFML/Graphics.hpp>
 #include<iostream>
 #include "player.cpp"
+#include "game.cpp"
 
 //this includes the standard functions in SFML's custom namespace which saves us an assload of "sf::insertCrapHere"
 using namespace sf;
 //who uses structs anymore? I guess C is useful; probably better to do this in a class; just declaring coordinates
-struct point
-{ int x,y;};
 
 int main()
 {
