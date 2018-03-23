@@ -22,8 +22,8 @@ int main()
 
     //loads textures from files, duhhh
     Texture t1,t2;
-    t1.loadFromFile("C:/Users/miami/CLionProjects/untitled/images/background.png");
-    t2.loadFromFile("C:/Users/miami/CLionProjects/untitled/images/platform.png");
+    t1.loadFromFile("../cmake_modules/Images/background.png");
+    t2.loadFromFile("../cmake_modules/Images/platform.png");
 
     Player player;
     //declaring the different images for their respective parts in the game (the person, platform, and background)
