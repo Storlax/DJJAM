@@ -7,3 +7,4 @@ Player::Player(){
     t1.loadFromFile("../cmake_modules/Images/lol.png");
     t2.loadFromFile("../cmake_modules/Images/lolFlipped.png");
 }
+

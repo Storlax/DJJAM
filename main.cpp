@@ -10,13 +10,25 @@
 using namespace sf;
 //who uses structs anymore? I guess C is useful; probably better to do this in a class; just declaring coordinates
 
+float positionToScore(int position)
+{
+    if (position > 0) {
+        return ((533) - abs(position));
+    } else
+    {
+        return ((533) + abs(position));
+    }
+}
+
 int main()
 {
-    std::cout<< "Michael you're famous";
+    std::cout<< "";
     //renders a window of size whatever I've declared; check parameters
     RenderWindow app(VideoMode(400, 533), "DJJAM");
     //sets framerate maximum to stop the program from seizing
     app.setFramerateLimit(60);
+
+
 
     //loads textures from files, duhhh
     Texture t1,t2;
@@ -60,15 +72,23 @@ int main()
         //nice built in functions to detect key movement; ya love to see it!
         if (Keyboard::isKeyPressed(Keyboard::Right)) {
             currentSprite = sPersR;
-            x += 3;
+            if (x>380) {
+                x = -60;
+            }else {
+                x += 3.5;
+            }
         }
         if (Keyboard::isKeyPressed(Keyboard::Left)) {
             currentSprite = sPersL;
-            x-=3;
+            if (x<-60) {
+                x = 410;
+            } else {
+                x -= 3.5;
+            }
         }
 
         //good ol' gravity
-        dy+=0.2;
+        dy+=0.25;
         //changes the current position to account for movement
         y+=dy;
         if (y>500)  dy=-10;
@@ -83,12 +103,31 @@ int main()
 
         for (int i=0;i<10;i++)
             if ((x+50>plat[i].x) && (x+20<plat[i].x+68)
-                && (y+70>plat[i].y) && (y+70<plat[i].y+14) && (dy>0))  dy=-10;
+                && (y+70>plat[i].y) && (y+70<plat[i].y+14) && (dy>0))  dy=-11;
 
         currentSprite.setPosition(x,y);
 
         app.draw(sBackground);
         app.draw(currentSprite);
+
+        sf::Font m_font;
+        m_font.loadFromFile("../cmake_modules/Images/OpenSans-Regular.ttf");
+        sf::Text m_score;
+        m_score.setFont(m_font);
+        m_score.setCharacterSize(35);
+        m_score.setFillColor(sf::Color::Black);
+        m_score.setPosition(10,0);
+
+        int score = 0;
+        int buffer = positionToScore(y);
+        if (buffer <= score) {
+            //Do Nothing
+        }else{
+            score = buffer;
+        }
+        m_score.setString("score: " + std::to_string(score));
+        app.draw(m_score);
+
         for (int i=0;i<10;i++)
         {
             sPlat.setPosition(plat[i].x,plat[i].y);
