@@ -8,17 +8,8 @@
 
 //this includes the standard functions in SFML's custom namespace which saves us an assload of "sf::insertCrapHere"
 using namespace sf;
+int score = 0;
 //who uses structs anymore? I guess C is useful; probably better to do this in a class; just declaring coordinates
-
-float positionToScore(int position)
-{
-    if (position > 0) {
-        return ((533) - abs(position));
-    } else
-    {
-        return ((533) + abs(position));
-    }
-}
 
 int main()
 {
@@ -27,7 +18,6 @@ int main()
     RenderWindow app(VideoMode(400, 533), "DJJAM");
     //sets framerate maximum to stop the program from seizing
     app.setFramerateLimit(60);
-
 
 
     //loads textures from files, duhhh
@@ -92,11 +82,10 @@ int main()
         //changes the current position to account for movement
         y+=dy;
         if (y>500)  dy=-10;
-
         if (y<h)
-            for (int i=0;i<10;i++)
-            {
+            for (int i=0;i<10;i++) {
                 y=h;
+                score += 1;
                 plat[i].y=plat[i].y-dy;
                 if (plat[i].y>533) {plat[i].y=0; plat[i].x=rand()%400;}
             }
@@ -118,13 +107,6 @@ int main()
         m_score.setFillColor(sf::Color::Black);
         m_score.setPosition(10,0);
 
-        int score = 0;
-        int buffer = positionToScore(y);
-        if (buffer <= score) {
-            //Do Nothing
-        }else{
-            score = buffer;
-        }
         m_score.setString("score: " + std::to_string(score));
         app.draw(m_score);
 
