@@ -8,7 +8,7 @@
 
 //this includes the standard functions in SFML's custom namespace which saves us an assload of "sf::insertCrapHere"
 using namespace sf;
-int score = 0;
+float score = 0.f;
 //who uses structs anymore? I guess C is useful; probably better to do this in a class; just declaring coordinates
 
 int main()
@@ -85,7 +85,7 @@ int main()
         if (y<h)
             for (int i=0;i<10;i++) {
                 y=h;
-                score += 1;
+                score += .01;
                 plat[i].y=plat[i].y-dy;
                 if (plat[i].y>533) {plat[i].y=0; plat[i].x=rand()%400;}
             }
@@ -107,7 +107,7 @@ int main()
         m_score.setFillColor(sf::Color::Black);
         m_score.setPosition(10,0);
 
-        m_score.setString("score: " + std::to_string(score));
+        m_score.setString("score: " + std::to_string((int)score));
         app.draw(m_score);
 
         for (int i=0;i<10;i++)
