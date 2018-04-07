@@ -11,10 +11,16 @@
 //this includes the standard functions in SFML's custom namespace which saves us an assload of "sf::insertCrapHere"
 using namespace sf;
 
-class Player{
+class Player {
+private:
+    Texture playerLeft, playerRight;
+    Texture background, platform;
 public:
-    Texture t1, t2;
     Player();
+    Sprite setSpriteL();
+    Sprite setSpriteR();
+    Sprite setSpriteBackground();
+    Sprite setSpritePlatform();
 };
 
 #endif //SFMLDEMO_PLAYER_H
