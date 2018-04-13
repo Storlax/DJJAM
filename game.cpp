@@ -1,9 +1,10 @@
 //
-// Created by dick on 3/22/2018.
+// Created by dick on 3/22/2018 <- Michael's Birthday.
 //
 
 #include "game.h"
 #include "player.h"
+#include "enemy.h"
 
 void gameLoop::initialize() {
     if(!window.isOpen())
@@ -41,9 +42,14 @@ void gameLoop::update() {
     t1.loadFromFile("../cmake_modules/Images/background.png");
     t2.loadFromFile("../cmake_modules/Images/platform.png");
 
-    //not sure what this one does; research
-    point plat[20];
+    //Enemy stuff
+    float enemyY = 40;
+    bool enemyPresent = false;
+    enemy newEnemy;
+    Sprite enemy = newEnemy.enemyRight;
 
+    //Platform stuff
+    point plat[20];
     for (int i = 0; i < 10;i++)
     {
         //seems to be setting the location of the platforms randomly
@@ -56,10 +62,11 @@ void gameLoop::update() {
     //good ol' changes in positions
     float dx = 0,dy = 0;
 
+    //Instantiate our player class
     Player player;
-    //declaring the different images for their respective parts in the game (the person, platform, and background)
-    Sprite sBackground(t1), sPlat(t2);
 
+    //Initialize our sprites
+    Sprite sBackground(t1), sPlat(t2);
     Sprite currentSprite = player.setSpriteL();
 
     while(window.isOpen())
@@ -110,12 +117,32 @@ void gameLoop::update() {
 
         currentSprite.setPosition(x,y);
 
+        //// Enemy Handling ////
+
+        /*
+         * while (enemyPresent != true), TimeSteps += 1
+         * random intervals (like borderlands damage), when reach spawn random enemy
+         * multiple enemies: one goes towards player, one shoots at player, one just stays still
+         * at end of enemyPresent, set timeSteps back to 0
+         */
+        if (score < 5){
+            enemyY = 0;
+        }
+        if (score > 5 && score < 30){
+            enemy.setPosition(100,200);
+            cout<<enemy.getPosition().x<<","<<enemy.getPosition().y<<" ";
+            enemyPresent = true;
+        }
+        if (enemyPresent){
+            window.draw(enemy);
+        }
+
+        //Draw everything on screen
         window.draw(sBackground);
         window.draw(currentSprite);
 
         m_score.setString("score: " + std::to_string((int)score));
         window.draw(m_score);
-
 
         for (int i=0;i<10;i++)
         {
