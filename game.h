@@ -26,6 +26,11 @@ static const string gameName = "DJJAM - Starring Mykle";
 
 //constants for other crap
 static const int gravity = 9.8f;
+static float enemyY = -80;
+static float enemyX = 100+(rand()%(300-100+1));
+static float enemyRelativeX = enemyX;
+static float currentAngle = 0;
+
 //add more here as we go
 
 class gameLoop {
@@ -44,6 +49,7 @@ private:
     sf::Text m_score;
 
     float score = 0.f;
+    float timeSteps = 0;
     void createWindow();
 };
 

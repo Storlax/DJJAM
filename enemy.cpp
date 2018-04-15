@@ -5,6 +5,6 @@
 #include "enemy.h"
 
 enemy::enemy(){
-    t3.loadFromFile("../cmake_modules/Images/doodle copy.png");
+    t3.loadFromFile("../cmake_modules/Images/FlamingSkull.png");
     enemyRight.setTexture(t3, true);
 }
