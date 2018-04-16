@@ -4,7 +4,7 @@
 
 #ifndef DJJAM_CSCREEN_H
 #define DJJAM_CSCREEN_H
-
+//screen interface
 class cScreen
 {
 public :

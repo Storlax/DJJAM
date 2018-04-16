@@ -10,6 +10,7 @@
 
 #include <SFML/Graphics.hpp>
 
+//our menu screen
 class menuScreen : public cScreen
 {
 private:

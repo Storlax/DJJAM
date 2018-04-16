@@ -13,7 +13,7 @@
 #include "gameScreen.h"
 
 static const string gameName = "DJJAM";
-
+//this holds all the information for our screens
 class screens
 {
 private:

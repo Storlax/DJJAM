@@ -20,7 +20,7 @@ struct point { int x, y; };
 
 using namespace std;
 using namespace sf;
-
+//our game screen
 class gameScreen : public cScreen
 {
 private:
