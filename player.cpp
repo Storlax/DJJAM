@@ -4,10 +4,8 @@
 #include "player.h"
 
 Player::Player(){
-    playerLeft.loadFromFile("../cmake_modules/Images/lol.png");
-    playerRight.loadFromFile("../cmake_modules/Images/lolFlipped.png");
-    background.loadFromFile("../cmake_modules/Images/background.png");
-    platform.loadFromFile("../cmake_modules/Images/platform.png");
+    playerLeft.loadFromFile("../cmake_modules/Images/Trump.png");
+    playerRight.loadFromFile("../cmake_modules/Images/Trump2.png");
 }
 
 Sprite Player::setSpriteL() {
@@ -20,12 +18,12 @@ Sprite Player::setSpriteR() {
     return sPersL;
 }
 
-Sprite Player::setSpriteBackground() {
-    Sprite sPlat(platform);
-    return sPlat;
+Texture Player::setPlatTexture() {
+    platform.loadFromFile("../cmake_modules/Images/platform.png");
+    return platform;
 }
 
-Sprite Player::setSpritePlatform() {
-    Sprite sBackground(background);
-    return sBackground;
+Texture Player::setBGTexture() {
+    background.loadFromFile("../cmake_modules/Images/background.png");
+    return background;
 }
