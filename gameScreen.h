@@ -13,6 +13,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <fstream>
 
 //TODO: ADD FUNCTION FOR PLATFORM GENERATION (including initial platform) AND GAME SPEED BASED ON SCORE
 
@@ -26,7 +27,10 @@ class gameScreen : public cScreen
 private:
     sf::Font m_font;
     sf::Text m_score;
+    sf::Text m_highScore;
     float score = 0.f;
+    int highScore = 0;
+    int frameRate = 60;
     float timeSteps = 0;
 public:
     virtual int Run(sf::RenderWindow &App);
@@ -41,7 +45,7 @@ public:
 };
 
 void gameScreen::setFont() {
-    m_font.loadFromFile("../cmake_modules/Images/OpenSans-Regular.ttf");
+    m_font.loadFromFile("../cmake_modules/Images/stocky.ttf");
 }
 
 void gameScreen::setScore() {
@@ -49,13 +53,19 @@ void gameScreen::setScore() {
     m_score.setCharacterSize(35);
     m_score.setFillColor(sf::Color::Black);
     m_score.setPosition(10,0);
+
+    m_highScore.setFont(m_font);
+    m_highScore.setCharacterSize(25);
+    m_highScore.setFillColor(sf::Color::Black);
+    m_highScore.setPosition(10,35);
 }
 
 int gameScreen::Run(sf::RenderWindow &App)
 {
     score = 0;
+    highScore = 0;
 
-    App.setFramerateLimit(60);
+    App.setFramerateLimit(frameRate);
 
     setFont();
     setScore();
@@ -94,8 +104,20 @@ int gameScreen::Run(sf::RenderWindow &App)
     Sprite sBackground(t1), sPlat(t2);
     Sprite currentSprite = player.setSpriteL();
 
+    ifstream loadHighScore;
+    loadHighScore.open("../cmake_modules/Score.txt");
+    loadHighScore >> highScore;
+    loadHighScore.close();
+
+    float scoreFrameLimit = 0.f;
+
     while(App.isOpen())
     {
+        if (score == 0) {
+            frameRate = 60;
+            App.setFramerateLimit(frameRate);
+            cout << "Frame Rate Reverted" << endl;
+        }
 
         //declaring an event
         Event e;
@@ -135,6 +157,7 @@ int gameScreen::Run(sf::RenderWindow &App)
             for (int i = 0; i < 10; i++) {
                 y = h;
                 score += .01;
+                scoreFrameLimit += .01;
                 if (!enemyPresent) {
                     timeSteps += .01;
                 }
@@ -142,6 +165,7 @@ int gameScreen::Run(sf::RenderWindow &App)
             for (int i = 0; i < 10; i++) {
                 y = h;
                 score += .01;
+                scoreFrameLimit += .01;
                 plat[i].y = plat[i].y - dy;
                 if (plat[i].y > 533) {
                     plat[i].y = 0;
@@ -172,7 +196,9 @@ int gameScreen::Run(sf::RenderWindow &App)
         App.draw(currentSprite);
 
         m_score.setString("score: " + std::to_string((int)score));
+        m_highScore.setString("high score: " + std::to_string(highScore));
         App.draw(m_score);
+        App.draw(m_highScore);
 
         for (int i=0;i<10;i++)
         {
@@ -195,6 +221,13 @@ int gameScreen::Run(sf::RenderWindow &App)
 
         //int interval = 10+(rand()%(30-10+1));
         int interval = 11;
+
+        if (scoreFrameLimit >= 50) {
+            scoreFrameLimit = 0.f;
+            frameRate += 5;
+            App.setFramerateLimit(frameRate);
+            cout << "Frame Rate changed" << endl;
+        }
 
         if (timeSteps <= interval+1 && timeSteps >= interval-1){
             enemy.setPosition(enemyX,enemyY);
@@ -219,6 +252,16 @@ int gameScreen::Run(sf::RenderWindow &App)
         }
         App.display();
     }
+
+    ofstream saveHighScore;
+    saveHighScore.open("../cmake_modules/Score.txt");
+    if ( score > highScore ) {
+        saveHighScore << (int) score;
+    } else {
+        saveHighScore << highScore;
+    }
+    saveHighScore.close();
+
 }
 
 #endif //DJJAM_GAMESCREEN_H

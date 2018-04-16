@@ -8,7 +8,7 @@
 #include "cScreen.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
-//#include <windows.h>
+#include <windows.h>
 //TODO: fix loop back to first screen
 class gameOverScreen : public cScreen
 {
