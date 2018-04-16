@@ -19,8 +19,8 @@ public:
     Player();
     Sprite setSpriteL();
     Sprite setSpriteR();
-    Sprite setSpriteBackground();
-    Sprite setSpritePlatform();
+    Texture setPlatTexture();
+    Texture setBGTexture();
 };
 
 #endif //SFMLDEMO_PLAYER_H
