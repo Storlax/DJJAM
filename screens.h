@@ -11,6 +11,7 @@
 //Including each screen of application
 #include "menuScreen.h"
 #include "gameScreen.h"
+#include "gameOverScreen.h"
 
 static const string gameName = "DJJAM";
 //this holds all the information for our screens
@@ -40,13 +41,21 @@ void screens::initialize() {
     Screens.push_back(&s0);
     gameScreen s1;
     Screens.push_back(&s1);
+    gameOverScreen s2;
+    Screens.push_back(&s2);
+
 
     //Main loop
-    while (screenNumber >= 0)
+    while (screenNumber >= 0 )
     {
         if(screenNumber == 0) {
+            cout << "first screen" << endl;
             screenNumber = Screens[screenNumber]->Run(App);
         } else if (screenNumber == 1) {
+            cout << "second screen" << endl;
+            screenNumber = Screens[screenNumber]->Run(App);
+        } else if (screenNumber == 2) {
+            cout << "third screen" << endl;
             screenNumber = Screens[screenNumber]->Run(App);
         }
     }

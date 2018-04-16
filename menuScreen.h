@@ -99,13 +99,12 @@ int menuScreen::Run(sf::RenderWindow &App)
                     case sf::Keyboard::Return:
                         if (menu == 0)
                         {
-                            //Let's get play !
+                            //Let's get playing!
                             playing = true;
                             return (1);
                         }
                         else
                         {
-                            //Let's get work...
                             return (-1);
                         }
                         break;

@@ -127,7 +127,7 @@ int gameScreen::Run(sf::RenderWindow &App)
         dy+=0.25;
         //changes the current position to account for movement
         y+=dy;
-        if (y>500)  dy=-10;
+        //if (y>500)  dy=-10;
         if (y<h) {
             if (enemyPresent) {
                 enemyY -= dy;
@@ -212,6 +212,11 @@ int gameScreen::Run(sf::RenderWindow &App)
             App.draw(enemy);
         }
 
+        if (y > 613)
+        {
+            score = 0.f;
+            return(2);
+        }
         App.display();
     }
 }
