@@ -4,6 +4,9 @@
 
 #ifndef DJJAM_CSCREEN_H
 #define DJJAM_CSCREEN_H
+
+bool gameOver = false;
+
 //screen interface
 class cScreen
 {
