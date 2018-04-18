@@ -10,10 +10,10 @@
 #include "cScreen.h"
 #include "player.h"
 #include "enemy.h"
+#include "bullet.h"
 
 #include <SFML/Graphics.hpp>
 #include <cmath>
-
 //TODO: ADD FUNCTION FOR PLATFORM GENERATION (including initial platform) AND GAME SPEED BASED ON SCORE
 
 struct point { int x, y; };
@@ -33,10 +33,10 @@ public:
     void setScore();
     void setFont();
 
-    float enemyY = -80;
     float enemyX = 100+(rand()%(300-100+1));
     float enemyRelativeX = enemyX;
     float currentAngle = 0;
+    float shootTimer = 0;
 
 };
 
@@ -66,11 +66,16 @@ int gameScreen::Run(sf::RenderWindow &App)
     t2.loadFromFile("../cmake_modules/Images/platform.png");
 
     //Enemy stuff
-    float enemyY = 40;
+    float enemyY = -80;
     bool enemyPresent = false;
+    bool bulletPresent = false;
+    float unitVector;
+    float offsetX;
+    float offsetY;
     enemy newEnemy;
+    Bullet bull;
+    int newType = newEnemy.enemyType;
     Sprite enemy = newEnemy.enemyRight;
-
     srand(time(reinterpret_cast<time_t *>(NULL)));
 
     //Platform stuff
@@ -152,12 +157,16 @@ int gameScreen::Run(sf::RenderWindow &App)
         }
 
         if(enemyY > 540){
+            //Reset everything for the next enemy
             enemyPresent = false;
             timeSteps = 0;
             enemyY = -40;
             srand(static_cast<unsigned int>(time(nullptr)));
             enemyX = 50+(rand()%(300-50+1));
             enemyRelativeX = enemyX;
+            newType = 1+(rand()%(2));
+            newEnemy.setBehavior(newType);
+            shootTimer = 0;
         }
 
         for (int i=0;i<10;i++)
@@ -199,13 +208,33 @@ int gameScreen::Run(sf::RenderWindow &App)
         if (timeSteps <= interval+1 && timeSteps >= interval-1){
             enemy.setPosition(enemyX,enemyY);
             enemyPresent = true;
-            //Move Back and forth
-            enemyX += 2*cos(currentAngle);
-            if (enemyX > (enemyRelativeX)+15) {
-                currentAngle = 180;
+            //Move Back and forth enemy
+            if(newType == 1) {
+                enemyX += 2 * cos(currentAngle);
+                if (enemyX > (enemyRelativeX) + 15) {
+                    currentAngle = 180;
+                }
+                if (enemyX < (enemyRelativeX) - 15) {
+                    currentAngle = 0;
+                }
+            }//Shoot music notes enemy
+            else if(newType == 2){
+                shootTimer += 1;
+                if (shootTimer >= 90 && bulletPresent == false){
+                    bull.bulletSprite.setPosition(enemyX+40,enemyY+40);
+                    unitVector = sqrt(pow(enemyX-x,2)+pow(enemyY-y,2));
+                    offsetX = x- enemyX;
+                    offsetY = y- enemyY;
+                    bulletPresent = true;
+                }
             }
-            if (enemyX < (enemyRelativeX)-15) {
-                currentAngle = 0;
+        }
+        if (bulletPresent == true) {
+            bull.bulletSprite.move(4*offsetX/unitVector,4*offsetY/unitVector);
+            App.draw(bull.bulletSprite);
+            if(bull.bulletSprite.getPosition().x >= 400 || bull.bulletSprite.getPosition().x <= -40
+                || bull.bulletSprite.getPosition().y >= 533 || bull.bulletSprite.getPosition().y <= -40){
+                bulletPresent = false;
             }
         }
         if (enemyPresent){
