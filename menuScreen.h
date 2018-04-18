@@ -50,7 +50,7 @@ int menuScreen::Run(sf::RenderWindow &App)
     }
     Sprite.setTexture(Texture);
     Sprite.setColor(sf::Color(255, 255, 255, alpha));
-    if (!Font.loadFromFile("../cmake_modules/Images/OpenSans-Regular.ttf"))
+    if (!Font.loadFromFile("../cmake_modules/Images/stocky.ttf"))
     {
         std::cerr << "Error loading OpenSans-Regular.ttf" << std::endl;
         return (-1);
@@ -153,3 +153,4 @@ int menuScreen::Run(sf::RenderWindow &App)
 }
 
 #endif //DJJAM_MENUSCREEN_H
+
