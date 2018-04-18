@@ -119,7 +119,7 @@ int main() {
             app.draw(enemy);
         }
         sf::Font m_font;
-        m_font.loadFromFile("../cmake_modules/Images/OpenSans-Regular.ttf");
+        m_font.loadFromFile("../cmake_modules/Images/stocky.ttf");
         sf::Text m_score;
         m_score.setFont(m_font);
         m_score.setCharacterSize(35);
