@@ -13,7 +13,9 @@ class enemy{
 public:
     Texture t3;
     Sprite enemyRight;
+    int enemyType;
     enemy();
+    void setBehavior(int newType);
 };
 
 #endif //DJJAM_ENEMY_H
