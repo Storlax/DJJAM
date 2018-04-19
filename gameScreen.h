@@ -108,7 +108,8 @@ int gameScreen::Run(sf::RenderWindow &App) {
         //declaring an event
         Event e;
         //research this
-        while (App.pollEvent(e)) {
+        while (App.pollEvent(e))
+        {
             if (e.type == Event::Closed)
                 App.close();
         }
@@ -207,22 +208,29 @@ int gameScreen::Run(sf::RenderWindow &App) {
         //int interval = 10+(rand()%(30-10+1));
         int interval = 11;
 
-        if (timeSteps <= interval + 1 && timeSteps >= interval - 1) {
+        if (timeSteps <= interval + 1 && timeSteps >= interval - 1)
+        {
             enemy.setPosition(enemyX, enemyY);
             enemyPresent = true;
             //Move Back and forth enemy
-            if (newType == 1) {
+            if (newType == 1)
+            {
                 enemyX += 2 * cos(currentAngle);
-                if (enemyX > (enemyRelativeX) + 15) {
+                if (enemyX > (enemyRelativeX) + 15)
+                {
                     currentAngle = 180;
                 }
-                if (enemyX < (enemyRelativeX) - 15) {
+                if (enemyX < (enemyRelativeX) - 15)
+                {
                     currentAngle = 0;
                 }
-            }//Shoot music notes enemy
-            else if (newType == 2) {
+            }
+            //Shoot music notes enemy
+            else if (newType == 2)
+            {
                 shootTimer += 1;
-                if (shootTimer >= 90 && bulletPresent == false) {
+                if (shootTimer >= 90 && bulletPresent == false)
+                {
                     bull.bulletSprite.setPosition(enemyX + 40, enemyY + 40);
                     unitVector = sqrt(pow(enemyX - x, 2) + pow(enemyY - y, 2));
                     offsetX = x - enemyX;
@@ -238,8 +246,34 @@ int gameScreen::Run(sf::RenderWindow &App) {
                 || bull.bulletSprite.getPosition().y >= 533 || bull.bulletSprite.getPosition().y <= -40) {
                 bulletPresent = false;
             }
+
+            //collision code for bullets
+            if (newType == 2 &&
+                bull.bulletSprite.getGlobalBounds().intersects(currentSprite.getGlobalBounds())) //only type 2 enemy
+            {
+                /**We can do a 2 things here
+                 * kill the player (but the bullets almost never miss so this could make the game too hard
+                 * Or lower the score and remove any effects (e.g. if the stage is moving fast bc of a pick up note we reset the speed)
+                 */
+
+                //there should also be a sound effect when it hits
+
+                score = 0; //place holder
+                //return (2); //death code but only if we decide that a bullet means death
+            }
         }
-        if (enemyPresent) {
+
+        //collision code for all enemies
+        if(enemy.getGlobalBounds().intersects(currentSprite.getGlobalBounds())) //if player touches any enemy, then he dies
+        {
+            //there should also be a sound effect when it hits
+
+            return (2); //death code
+        }
+
+
+        if (enemyPresent)
+        {
             App.draw(enemy);
         }
 
@@ -275,6 +309,7 @@ int gameScreen::Run(sf::RenderWindow &App) {
             if (spawnTime.asSeconds() <= 10)
             {
                 App.draw(musicNotes.getSprite());
+
                 //Collision detection with pick ups
                 if (currentSprite.getGlobalBounds().intersects(musicNotes.getPosition())) {
                     /*

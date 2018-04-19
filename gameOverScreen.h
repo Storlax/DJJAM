@@ -18,9 +18,11 @@ public:
     virtual int Run(sf::RenderWindow &App);
 };
 
-int gameOverScreen::Run(sf::RenderWindow &App) {
+int gameOverScreen::Run(sf::RenderWindow &App)
+{
 
-    while (running) {
+    while (running)
+    {
 
         Event e;
 
@@ -75,16 +77,6 @@ int gameOverScreen::Run(sf::RenderWindow &App) {
                 case sf::Keyboard::Down:
                     menu = 1;
                     break;
-                case sf::Keyboard::Return:
-                    if (menu == 0)
-                    {   std::cout << "You clicked enter!";
-                        return (1);
-                    }
-                    else
-                    {
-                        return (-1);
-                    }
-                    break;
                 default:
                     break;
             }
@@ -103,6 +95,16 @@ int gameOverScreen::Run(sf::RenderWindow &App) {
             Menu3.setFillColor(sf::Color::Black);
         }
 
+        //Once game is over you can replay or exit
+        if(e.key.code == sf::Keyboard::Return)
+        {
+            if (menu == 0) {
+                std::cout << "You clicked enter!";
+                return (1);
+            } else {
+                return (-1);
+            }
+        }
         App.clear();
 
         App.draw(bg);

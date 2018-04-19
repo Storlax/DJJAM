@@ -48,13 +48,18 @@ void screens::initialize() {
     //Main loop
     while (screenNumber >= 0 )
     {
-        if(screenNumber == 0) {
+        if(screenNumber == 0)
+        {
             cout << "first screen" << endl;
             screenNumber = Screens[screenNumber]->Run(App);
-        } else if (screenNumber == 1) {
+        }
+        else if (screenNumber == 1)
+        {
             cout << "second screen" << endl;
             screenNumber = Screens[screenNumber]->Run(App);
-        } else if (screenNumber == 2) {
+        }
+        else if (screenNumber == 2)
+        {
             cout << "third screen" << endl;
             screenNumber = Screens[screenNumber]->Run(App);
         }
