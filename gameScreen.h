@@ -11,7 +11,8 @@
 #include "player.h"
 #include "enemy.h"
 #include "bullet.h"
-
+#include "Pickup.h"
+#include "TextureHolder.h"
 #include <SFML/Graphics.hpp>
 #include <cmath>
 //TODO: ADD FUNCTION FOR PLATFORM GENERATION (including initial platform) AND GAME SPEED BASED ON SCORE
@@ -51,8 +52,7 @@ void gameScreen::setScore() {
     m_score.setPosition(10,0);
 }
 
-int gameScreen::Run(sf::RenderWindow &App)
-{
+int gameScreen::Run(sf::RenderWindow &App) {
     score = 0;
 
     App.setFramerateLimit(60);
@@ -61,7 +61,7 @@ int gameScreen::Run(sf::RenderWindow &App)
     setScore();
 
     //loads textures from files, duhhh
-    Texture t1,t2;
+    Texture t1, t2;
     t1.loadFromFile("../cmake_modules/Images/background.png");
     t2.loadFromFile("../cmake_modules/Images/platform.png");
 
@@ -80,17 +80,16 @@ int gameScreen::Run(sf::RenderWindow &App)
 
     //Platform stuff
     point plat[20];
-    for (int i = 0; i < 10;i++)
-    {
+    for (int i = 0; i < 10; i++) {
         //setting the location of the platforms randomly
-        plat[i].x = rand()%400;
-        plat[i].y = rand()%533;
+        plat[i].x = rand() % 400;
+        plat[i].y = rand() % 533;
     }
 
     //starting locations yay!
-    int x = 100,y = 100,h = 200;
+    int x = 100, y = 100, h = 200;
     //good ol' changes in positions
-    float dx = 0,dy = 0;
+    float dx = 0, dy = 0;
 
     //Instantiate our player class
     Player player;
@@ -99,29 +98,32 @@ int gameScreen::Run(sf::RenderWindow &App)
     Sprite sBackground(t1), sPlat(t2);
     Sprite currentSprite = player.setSpriteL();
 
-    while(App.isOpen())
-    {
+    //Pickups
+    Clock spawnClock; //starts clock for pickups
+    TextureHolder textureHolder; //Holds all the textures in this file
+
+    while (App.isOpen()) {
+
 
         //declaring an event
         Event e;
         //research this
-        while (App.pollEvent(e))
-        {
+        while (App.pollEvent(e)) {
             if (e.type == Event::Closed)
                 App.close();
         }
         //nice built in functions to detect key movement; ya love to see it!
         if (Keyboard::isKeyPressed(Keyboard::Right)) {
             currentSprite = player.setSpriteR();
-            if (x>380) {
+            if (x > 380) {
                 x = -60;
-            }else {
+            } else {
                 x += 3.5;
             }
         }
         if (Keyboard::isKeyPressed(Keyboard::Left)) {
             currentSprite = player.setSpriteL();
-            if (x<-60) {
+            if (x < -60) {
                 x = 410;
             } else {
                 x -= 3.5;
@@ -129,11 +131,11 @@ int gameScreen::Run(sf::RenderWindow &App)
         }
 
         //good ol' gravity
-        dy+=0.25;
+        dy += 0.25;
         //changes the current position to account for movement
-        y+=dy;
+        y += dy;
         //if (y>500)  dy=-10;
-        if (y<h) {
+        if (y < h) {
             if (enemyPresent) {
                 enemyY -= dy;
             }
@@ -156,36 +158,36 @@ int gameScreen::Run(sf::RenderWindow &App)
 
         }
 
-        if(enemyY > 540){
+        if (enemyY > 540) {
             //Reset everything for the next enemy
             enemyPresent = false;
             timeSteps = 0;
             enemyY = -40;
             srand(static_cast<unsigned int>(time(nullptr)));
-            enemyX = 50+(rand()%(300-50+1));
+            enemyX = 50 + (rand() % (300 - 50 + 1));
             enemyRelativeX = enemyX;
-            newType = 1+(rand()%(2));
+            newType = 1 + (rand() % (2));
             newEnemy.setBehavior(newType);
             shootTimer = 0;
         }
 
-        for (int i=0;i<10;i++)
-            if ((x + 50 > plat[i].x) && (x+20<plat[i].x+68)
-                && (y + 70>plat[i].y) && (y+70<plat[i].y+14) && (dy>0))  dy=-11;
+        for (int i = 0; i < 10; i++)
+            if ((x + 50 > plat[i].x) && (x + 20 < plat[i].x + 68)
+                && (y + 70 > plat[i].y) && (y + 70 < plat[i].y + 14) && (dy > 0))
+                dy = -11;
 
-        currentSprite.setPosition(x,y);
+        currentSprite.setPosition(x, y);
 
 
         //Draw everything on screen
         App.draw(sBackground);
         App.draw(currentSprite);
 
-        m_score.setString("score: " + std::to_string((int)score));
+        m_score.setString("score: " + std::to_string((int) score));
         App.draw(m_score);
 
-        for (int i=0;i<10;i++)
-        {
-            sPlat.setPosition(plat[i].x,plat[i].y);
+        for (int i = 0; i < 10; i++) {
+            sPlat.setPosition(plat[i].x, plat[i].y);
             App.draw(sPlat);
         }
 
@@ -205,11 +207,11 @@ int gameScreen::Run(sf::RenderWindow &App)
         //int interval = 10+(rand()%(30-10+1));
         int interval = 11;
 
-        if (timeSteps <= interval+1 && timeSteps >= interval-1){
-            enemy.setPosition(enemyX,enemyY);
+        if (timeSteps <= interval + 1 && timeSteps >= interval - 1) {
+            enemy.setPosition(enemyX, enemyY);
             enemyPresent = true;
             //Move Back and forth enemy
-            if(newType == 1) {
+            if (newType == 1) {
                 enemyX += 2 * cos(currentAngle);
                 if (enemyX > (enemyRelativeX) + 15) {
                     currentAngle = 180;
@@ -218,36 +220,83 @@ int gameScreen::Run(sf::RenderWindow &App)
                     currentAngle = 0;
                 }
             }//Shoot music notes enemy
-            else if(newType == 2){
+            else if (newType == 2) {
                 shootTimer += 1;
-                if (shootTimer >= 90 && bulletPresent == false){
-                    bull.bulletSprite.setPosition(enemyX+40,enemyY+40);
-                    unitVector = sqrt(pow(enemyX-x,2)+pow(enemyY-y,2));
-                    offsetX = x- enemyX;
-                    offsetY = y- enemyY;
+                if (shootTimer >= 90 && bulletPresent == false) {
+                    bull.bulletSprite.setPosition(enemyX + 40, enemyY + 40);
+                    unitVector = sqrt(pow(enemyX - x, 2) + pow(enemyY - y, 2));
+                    offsetX = x - enemyX;
+                    offsetY = y - enemyY;
                     bulletPresent = true;
                 }
             }
         }
         if (bulletPresent == true) {
-            bull.bulletSprite.move(4*offsetX/unitVector,4*offsetY/unitVector);
+            bull.bulletSprite.move(4 * offsetX / unitVector, 4 * offsetY / unitVector);
             App.draw(bull.bulletSprite);
-            if(bull.bulletSprite.getPosition().x >= 400 || bull.bulletSprite.getPosition().x <= -40
-                || bull.bulletSprite.getPosition().y >= 533 || bull.bulletSprite.getPosition().y <= -40){
+            if (bull.bulletSprite.getPosition().x >= 400 || bull.bulletSprite.getPosition().x <= -40
+                || bull.bulletSprite.getPosition().y >= 533 || bull.bulletSprite.getPosition().y <= -40) {
                 bulletPresent = false;
             }
         }
-        if (enemyPresent){
+        if (enemyPresent) {
             App.draw(enemy);
         }
 
-        if (y > 613)
-        {
+        if (y > 613) {
             score = 0.f;
-            return(2);
+            return (2);
         }
-        App.display();
+
+        //Making the pickups
+        Sprite musicNote_Type_1 = Sprite(textureHolder.GetTexture(
+                "../cmake_modules/Images/Music_Note_1_small.png")); //the texture is set here and then this sprite is passed by reference
+        Pickup musicNotes(musicNote_Type_1);
+        musicNotes.setArena(400, 400); //tells pick the space they can spawn in
+
+
+        Time spawnTime = spawnClock.getElapsedTime();
+
+        //spawn code to set the sprite's location
+        if (!musicNotes.getSpawned())
+        {
+            musicNotes.spawn(); //sets the note's random positions
+        } else
+        {
+            musicNotes.setSpawned(0); //redundant bc spawned value is false
+        }
+
+
+        //Draws Note Type 1
+        if (spawnTime.asSeconds() >= 5)// if sprite is not spawned and rand nums are right values
+        {
+            //at this point we know the clock is at least 5 secs
+            //so the next few lines tell the c6lock to wait 5 more seconds before despawning
+            if (spawnTime.asSeconds() <= 10)
+            {
+                App.draw(musicNotes.getSprite());
+                //Collision detection with pick ups
+                if (currentSprite.getGlobalBounds().intersects(musicNotes.getPosition())) {
+                    /*
+                     ****************Code FOR THE STAGE SPEED GOES HERE!!***************
+                     */
+
+                    spawnClock.restart(); //time resets when there is a collision
+                }
+
+            }
+            else if (spawnTime.asSeconds() > 10)
+            {
+                spawnClock.restart(); //resets spawnClock so if statement can work again
+            }
+        }
+
+
+            //add other types of notes that do dif things
+
+
+            App.display();
+        }
     }
-}
 
 #endif //DJJAM_GAMESCREEN_H
