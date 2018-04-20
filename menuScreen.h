@@ -1,5 +1,5 @@
 //
-// Created by miami on 4/13/2018.
+// Created by Nick on 4/13/2018.
 //
 
 #ifndef DJJAM_MENUSCREEN_H

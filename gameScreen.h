@@ -1,5 +1,5 @@
 //
-// Created by miami on 4/13/2018.
+// Created by Nick on 4/13/2018.
 //
 
 #ifndef DJJAM_GAMESCREEN_H
@@ -18,7 +18,7 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 //TODO: ADD FUNCTION FOR PLATFORM GENERATION (including initial platform) AND GAME SPEED BASED ON SCORE
-
+//
 struct point { int x, y; };
 
 using namespace std;
