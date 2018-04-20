@@ -1,6 +1,5 @@
 ////
 // Created by Michael DelSole on 4/13/18.
-//
 
 #include "enemy.h"
 
