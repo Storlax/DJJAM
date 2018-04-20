@@ -13,12 +13,26 @@ class Bullet{
 public:
     Texture te;
     Sprite bulletSprite;
+    int bulletType;
+    float distanceTraveled;
     Bullet();
+    void setSprite(int type);
 };
 
 Bullet::Bullet(){
     te.loadFromFile("../cmake_modules/Images/musicBullet.png");
     bulletSprite.setTexture(te, true);
+}
+
+void Bullet::setSprite(int newType) {
+    if (newType == 2){
+        te.loadFromFile("../cmake_modules/Images/musicBullet.png");
+        bulletSprite.setTexture(te, true);
+    }
+    else if (newType == 3){
+        te.loadFromFile("../cmake_modules/Images/drumStick.png");
+        bulletSprite.setTexture(te, true);
+    }
 }
 
 

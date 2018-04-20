@@ -20,7 +20,7 @@ class screens
 private:
     static const unsigned int windowHeight = 533;
     static const unsigned int windowWidth = 400;
-    static const unsigned int antialiasingLevel = 8;
+    static const unsigned int antialiasingLevel = 32;
 public:
     void initialize();
 };
@@ -48,13 +48,18 @@ void screens::initialize() {
     //Main loop
     while (screenNumber >= 0 )
     {
-        if(screenNumber == 0) {
+        if(screenNumber == 0)
+        {
             cout << "first screen" << endl;
             screenNumber = Screens[screenNumber]->Run(App);
-        } else if (screenNumber == 1) {
+        }
+        else if (screenNumber == 1)
+        {
             cout << "second screen" << endl;
             screenNumber = Screens[screenNumber]->Run(App);
-        } else if (screenNumber == 2) {
+        }
+        else if (screenNumber == 2)
+        {
             cout << "third screen" << endl;
             screenNumber = Screens[screenNumber]->Run(App);
         }

@@ -5,7 +5,7 @@
 #include "enemy.h"
 
 enemy::enemy(){
-    enemyType = 1+(rand()%(2));
+    enemyType = 1+(rand()%(3));
     std::cout<<enemyType;
     if (enemyType == 1) {
         t3.loadFromFile("../cmake_modules/Images/FlamingSkull.png");
@@ -13,6 +13,10 @@ enemy::enemy(){
     }
     else if (enemyType == 2){
         t3.loadFromFile("../cmake_modules/Images/pianoGuy.png");
+        enemyRight.setTexture(t3, true);
+    }
+    else if (enemyType == 3){
+        t3.loadFromFile("../cmake_modules/Images/drumGuy.png");
         enemyRight.setTexture(t3, true);
     }
 
@@ -25,6 +29,10 @@ void enemy::setBehavior(int newType) {
     }
     else if (newType == 2){
         t3.loadFromFile("../cmake_modules/Images/pianoGuy.png");
+        enemyRight.setTexture(t3, true);
+    }
+    else if (enemyType == 3){
+        t3.loadFromFile("../cmake_modules/Images/drumGuy.png");
         enemyRight.setTexture(t3, true);
     }
 }

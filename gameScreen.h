@@ -11,6 +11,9 @@
 #include "player.h"
 #include "enemy.h"
 #include "bullet.h"
+#include "collision.h"
+#include "Pickup.h"
+#include "TextureHolder.h"
 
 #include <SFML/Graphics.hpp>
 #include <cmath>
@@ -76,7 +79,9 @@ int gameScreen::Run(sf::RenderWindow &App)
     Bullet bull;
     int newType = newEnemy.enemyType;
     Sprite enemy = newEnemy.enemyRight;
+    float rotation = 0;
     srand(time(reinterpret_cast<time_t *>(NULL)));
+
 
     //Platform stuff
     point plat[20];
@@ -98,6 +103,10 @@ int gameScreen::Run(sf::RenderWindow &App)
     //Initialize our sprites
     Sprite sBackground(t1), sPlat(t2);
     Sprite currentSprite = player.setSpriteL();
+
+    //Pickups
+    Clock spawnClock; //starts clock for pickups
+    TextureHolder textureHolder; //Holds all the textures in this file
 
     while(App.isOpen())
     {
@@ -137,6 +146,10 @@ int gameScreen::Run(sf::RenderWindow &App)
             if (enemyPresent) {
                 enemyY -= dy;
             }
+            // Make the bullet move with the platforms
+            if (bulletPresent) {
+                bull.bulletSprite.setPosition(bull.bulletSprite.getPosition().x,bull.bulletSprite.getPosition().y-dy);
+            }
             for (int i = 0; i < 10; i++) {
                 y = h;
                 score += .01;
@@ -164,9 +177,11 @@ int gameScreen::Run(sf::RenderWindow &App)
             srand(static_cast<unsigned int>(time(nullptr)));
             enemyX = 50+(rand()%(300-50+1));
             enemyRelativeX = enemyX;
-            newType = 1+(rand()%(2));
+            newType = 1+(rand()%(3));
             newEnemy.setBehavior(newType);
             shootTimer = 0;
+            bull.distanceTraveled = 0;
+            rotation = 0;
         }
 
         for (int i=0;i<10;i++)
@@ -190,17 +205,6 @@ int gameScreen::Run(sf::RenderWindow &App)
         }
 
         //// Enemy Handling ////
-
-        /*
-         * multiple enemies: one goes towards player, one shoots at player, one just stays still
-         * at end of enemyPresent, set timeSteps back to 0
-         */
-
-        /*
-         * Teleporter:
-         *             enemy.setPosition(100+(rand()%(300-100+1)),enemyY);
-         */
-
 
         //int interval = 10+(rand()%(30-10+1));
         int interval = 11;
@@ -226,20 +230,113 @@ int gameScreen::Run(sf::RenderWindow &App)
                     offsetX = x- enemyX;
                     offsetY = y- enemyY;
                     bulletPresent = true;
+                    shootTimer = 0;
+                }
+            } //Boomerang drumstick enemy
+            else if(newType == 3){
+                shootTimer += 1;
+                if (shootTimer >= 90){
+                    bull.setSprite(3);
+                    bull.bulletSprite.setPosition(enemyX+40,enemyY+40);
+                    unitVector = sqrt(pow(enemyX-x,2)+pow(enemyY-y,2));
+                    offsetX = x- enemyX;
+                    offsetY = y- enemyY;
+                    bulletPresent = true;
+                    shootTimer = 0;
                 }
             }
+
         }
         if (bulletPresent == true) {
-            bull.bulletSprite.move(4*offsetX/unitVector,4*offsetY/unitVector);
-            App.draw(bull.bulletSprite);
-            if(bull.bulletSprite.getPosition().x >= 400 || bull.bulletSprite.getPosition().x <= -40
-                || bull.bulletSprite.getPosition().y >= 533 || bull.bulletSprite.getPosition().y <= -40){
-                bulletPresent = false;
+            //Music Notes
+            if (newType == 2) {
+                bull.bulletSprite.move(4 * offsetX / unitVector, 4 * offsetY / unitVector);
+                App.draw(bull.bulletSprite);
+                if (bull.bulletSprite.getPosition().x >= 400 || bull.bulletSprite.getPosition().x <= -40
+                    || bull.bulletSprite.getPosition().y >= 533 || bull.bulletSprite.getPosition().y <= -40) {
+                    bulletPresent = false;
+                }
+                if (Collision::PixelPerfect(currentSprite, bull.bulletSprite)) {
+                    score = 0.f;
+                    return (2);
+                }
+            } //Boomerang Drumsticks
+            else if(newType == 3) {
+                bull.bulletSprite.setOrigin(5,37);
+                bull.bulletSprite.setRotation(rotation);
+                rotation += 10;
+                if (rotation >= 359){
+                    rotation = 0;
+                }
+                bull.distanceTraveled += 0.1;
+                if (bull.distanceTraveled <= 5) {
+                    bull.bulletSprite.move(3 * offsetX / unitVector, 3 * offsetY / unitVector);
+                } else {
+                    bull.bulletSprite.move(-3 * offsetX / unitVector, -3 * offsetY / unitVector);
+                    if (Collision::PixelPerfect(bull.bulletSprite, enemy)) {
+                        bull.distanceTraveled = 0;
+                        bulletPresent = false;
+                    }
+                }
+                App.draw(bull.bulletSprite);
+                if (Collision::PixelPerfect(currentSprite, bull.bulletSprite)) {
+                    score = 0.f;
+                    return (2);
+                }
             }
+
         }
         if (enemyPresent){
             App.draw(enemy);
+            if (Collision::PixelPerfect(currentSprite,enemy)){
+                score = 0.f;
+                return(2);
+            }
         }
+
+        //Making the pickups
+        //the texture is set here and then this sprite is passed by reference
+        Sprite musicNote_Type_1 = Sprite(textureHolder.GetTexture("../cmake_modules/Images/musicBullet.png"));
+        Pickup musicNotes(musicNote_Type_1);
+        musicNotes.setArena(400, 400); //tells pick the space they can spawn in
+
+
+        Time spawnTime = spawnClock.getElapsedTime();
+
+        //spawn code to set the sprite's location
+        if (!musicNotes.getSpawned()) {
+            musicNotes.spawn(); //sets the note's random positions
+        } else
+        {
+            musicNotes.setSpawned(0); //redundant bc spawned value is false
+        }
+
+
+        //Draws Note Type 1
+        if (spawnTime.asSeconds() >= 5)// if sprite is not spawned and rand nums are right values
+        {
+            //at this point we know the clock is at least 5 secs
+            //so the next few lines tell the c6lock to wait 5 more seconds before despawning
+            if (spawnTime.asSeconds() <= 10)
+            {
+                App.draw(musicNotes.getSprite());
+
+                //Collision detection with pick ups
+                if (currentSprite.getGlobalBounds().intersects(musicNotes.getPosition())) {
+                    /*
+                     ****************Code FOR THE STAGE SPEED GOES HERE!!***************
+                     */
+
+                    spawnClock.restart(); //time resets when there is a collision
+                }
+
+            }
+            else if (spawnTime.asSeconds() > 10)
+            {
+                spawnClock.restart(); //resets spawnClock so if statement can work again
+            }
+        }
+
 
         if (y > 613)
         {
