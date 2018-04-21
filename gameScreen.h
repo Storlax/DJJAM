@@ -43,7 +43,7 @@ public:
     void setScore();
     void setFont();
     float enemyX;
-    int newType = 4;//randNum(1,4);
+    int newType = randNum(1,4);
     float currentAngle = 0;
     float shootTimer = 0;
     int templocation;
@@ -488,7 +488,7 @@ int gameScreen::Run(sf::RenderWindow &App)
 
         //Making the pickups
         //the texture is set here and then this sprite is passed by reference
-        Sprite musicNote_Type_1 = Sprite(textureHolder.GetTexture("../cmake_modules/Images/musicBullet.png"));
+        Sprite musicNote_Type_1 = Sprite(textureHolder.GetTexture("../cmake_modules/Images/headphones.png"));
         Pickup musicNotes(musicNote_Type_1);
         musicNotes.setArena(400, 400); //tells pick the space they can spawn in
 
