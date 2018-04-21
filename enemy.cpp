@@ -7,6 +7,7 @@ enemy::enemy(){
     t1.loadFromFile("../cmake_modules/Images/FlamingSkull.png");
     t2.loadFromFile("../cmake_modules/Images/pianoGuy.png");
     t3.loadFromFile("../cmake_modules/Images/drumGuy.png");
+    t4.loadFromFile("../cmake_modules/Images/guitarGuy.png");
 }
 
 Sprite enemy::setBehavior(int newType) {
@@ -20,6 +21,10 @@ Sprite enemy::setBehavior(int newType) {
     }
     else if (newType == 3){
         Sprite enemyT(t3);
+        return enemyT;
+    }
+    else if (newType == 4){
+        Sprite enemyT(t4);
         return enemyT;
     }
 }

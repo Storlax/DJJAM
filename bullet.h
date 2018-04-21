@@ -11,27 +11,21 @@ using namespace sf;
 
 class Bullet{
 public:
-    Texture te;
+    Texture t2,t3;
     Sprite bulletSprite;
     int bulletType;
     float distanceTraveled;
-    Bullet();
     void setSprite(int type);
 };
 
-Bullet::Bullet(){
-    te.loadFromFile("../cmake_modules/Images/musicBullet.png");
-    bulletSprite.setTexture(te, true);
-}
-
 void Bullet::setSprite(int newType) {
     if (newType == 2){
-        te.loadFromFile("../cmake_modules/Images/musicBullet.png");
-        bulletSprite.setTexture(te, true);
+        t2.loadFromFile("../cmake_modules/Images/musicBullet.png");
+        bulletSprite.setTexture(t2, true);
     }
     else if (newType == 3){
-        te.loadFromFile("../cmake_modules/Images/drumStick.png");
-        bulletSprite.setTexture(te, true);
+        t3.loadFromFile("../cmake_modules/Images/drumStick.png");
+        bulletSprite.setTexture(t3, true);
     }
 }
 

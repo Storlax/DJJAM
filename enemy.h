@@ -11,7 +11,7 @@ using namespace sf;
 
 class enemy{
 private:
-    Texture t1,t2,t3;
+    Texture t1,t2,t3,t4;
 public:
     Sprite enemyRight;
     int enemyType;

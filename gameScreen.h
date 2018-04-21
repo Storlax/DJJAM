@@ -43,12 +43,14 @@ public:
     void setScore();
     void setFont();
     float enemyX;
-    int newType = randNum(1,3);
-    float enemyRelativeX = enemyX;
+    int newType = 4;//randNum(1,4);
     float currentAngle = 0;
     float shootTimer = 0;
     int templocation;
     float max_FPS = 60;
+    float rotation = 0;
+    float spinCounter = 0;
+    bool spinStart = false;
 
 };
 
@@ -88,6 +90,7 @@ int gameScreen::Run(sf::RenderWindow &App)
     //Enemy stuff
     float enemyY = -80;
     enemyX = 100+(dist(rd)%(300-100+1));
+    float enemyRelativeX = enemyX;
     bool enemyPresent = false;
     bool bulletPresent = false;
     float unitVector;
@@ -96,7 +99,8 @@ int gameScreen::Run(sf::RenderWindow &App)
     enemy newEnemy;
     Bullet bull;
     Sprite enemy = newEnemy.setBehavior(newType);
-    float rotation = 0;
+    bull.setSprite(newType);
+
     //srand(time(reinterpret_cast<time_t *>(NULL)));
 
 
@@ -278,12 +282,16 @@ int gameScreen::Run(sf::RenderWindow &App)
             //srand(static_cast<unsigned int>(time(nullptr)));
             enemyX = 50+(dist(rd)%(300-50+1));
             enemyRelativeX = enemyX;
-            newType = randNum(1,3);
+            newType = randNum(1,4);
             cout<<newType;
             enemy = newEnemy.setBehavior(newType);
+            enemy.setOrigin(0,0);
+            bull.bulletSprite.setOrigin(0,0);
             shootTimer = 0;
             bull.distanceTraveled = 0;
             rotation = 0;
+            spinCounter = 0;
+            spinStart = false;
         }
 
         if (score <= 50) {
@@ -357,7 +365,7 @@ int gameScreen::Run(sf::RenderWindow &App)
         //// Enemy Handling ////
 
         //int interval = 10+(rand()%(30-10+1));
-        int interval = 11;
+        float interval = 11;
 
         if (timeSteps <= interval+1 && timeSteps >= interval-1){
             enemy.setPosition(enemyX,enemyY);
@@ -375,6 +383,7 @@ int gameScreen::Run(sf::RenderWindow &App)
             else if(newType == 2){
                 shootTimer += 1;
                 if (shootTimer >= 90 && bulletPresent == false){
+                    bull.setSprite(2);
                     bull.bulletSprite.setPosition(enemyX+40,enemyY+40);
                     unitVector = sqrt(pow(enemyX-x,2)+pow(enemyY-y,2));
                     offsetX = x- enemyX;
@@ -392,6 +401,42 @@ int gameScreen::Run(sf::RenderWindow &App)
                     offsetY = y- enemyY;
                     bulletPresent = true;
                     shootTimer = 0;
+                }
+            } //GuitarEnemy, rotates to look at player
+            else if(newType == 4) {
+                enemy.setOrigin(42.5,13.5);
+                offsetX = x- enemyX;
+                offsetY = y- enemyY;
+                if (spinStart){
+                    spinCounter += 1;
+                }
+                float distance = sqrt(pow(enemyX-x,2)+pow(enemyY-y,2));
+                if(distance >= 120 && spinStart == false) {
+                    float ang = atan2(offsetY, offsetX) * (180 / 3.1415926);
+                    if (x > enemyX) {
+                        enemy.setTexture(textureHolder.GetTexture("../cmake_modules/Images/guitarGuy.png"));
+                        enemy.setRotation(ang);
+                    } else {
+                        enemy.setTexture(textureHolder.GetTexture("../cmake_modules/Images/guitarGuyL.png"));
+                        enemy.setRotation(ang);
+                    }
+                }
+                else{
+                    if (x > enemyX) {
+                        enemy.setTexture(textureHolder.GetTexture("../cmake_modules/Images/guitarGuySmile.png"));
+                    } else {
+                        enemy.setTexture(textureHolder.GetTexture("../cmake_modules/Images/guitarGuySmileL.png"));
+                    }
+                    spinStart = true;
+                    spinCounter += 1;
+                    if (spinCounter >= 70) {
+                        enemy.rotate(20);
+                        spinCounter += 1;
+                        if(spinCounter >= 300){
+                            spinStart = false;
+                            spinCounter = 0;
+                        }
+                    }
                 }
             }
         }
@@ -432,7 +477,6 @@ int gameScreen::Run(sf::RenderWindow &App)
                     return (2);
                 }
             }
-
         }
         if (enemyPresent){
             App.draw(enemy);
