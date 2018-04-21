@@ -4,8 +4,8 @@
 #include "player.h"
 
 Player::Player(){
-    playerLeft.loadFromFile("../cmake_modules/Images/Trump.png");
-    playerRight.loadFromFile("../cmake_modules/Images/Trump2.png");
+    playerLeft.loadFromFile("../cmake_modules/Images/smallMellowL.png");
+    playerRight.loadFromFile("../cmake_modules/Images/smallMellowR.png");
 }
 
 Sprite Player::setSpriteL() {
