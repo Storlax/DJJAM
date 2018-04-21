@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 #include<iostream>
+#include<fstream>
 
 //this includes the standard functions in SFML's custom namespace which saves us an assload of "sf::insertCrapHere"
 using namespace sf;
@@ -21,6 +22,8 @@ public:
     Sprite setSpriteR();
     Texture setPlatTexture();
     Texture setBGTexture();
+    std::ifstream applyPlayerModel;
+
 };
 
 #endif //SFMLDEMO_PLAYER_H

@@ -14,9 +14,11 @@
 #include "collision.h"
 #include "Pickup.h"
 #include "TextureHolder.h"
+#include "songs.h"
 #include <random>
 
 #include <SFML/Graphics.hpp>
+#include "SFML/Audio.hpp"
 #include <cmath>
 //TODO: ADD FUNCTION FOR PLATFORM GENERATION (including initial platform) AND GAME SPEED BASED ON SCORE
 
@@ -43,10 +45,11 @@ public:
     void setScore();
     void setFont();
     float enemyX;
-    int newType = randNum(1,4);
+    int newType = 1;//randNum(1,4);
     float currentAngle = 0;
     float shootTimer = 0;
     int templocation;
+    int highScore = 0;
     float max_FPS = 60;
     float rotation = 0;
     float spinCounter = 0;
@@ -68,6 +71,11 @@ void gameScreen::setScore() {
 int gameScreen::Run(sf::RenderWindow &App)
 {
     score = 0;
+
+    ifstream inputHighScore;
+    inputHighScore.open("../cmake_modules/Local_Game_Data/HighScore.txt");
+    inputHighScore >> highScore;
+    inputHighScore.close();
 
     App.setFramerateLimit(max_FPS);
     max_FPS = 60;
@@ -110,59 +118,59 @@ int gameScreen::Run(sf::RenderWindow &App)
     point platRed[4];
     point platYellow[3];
 
-    plat[0].y = rand() % 8 + 525;
+    plat[0].y = dist(rd) % 8 + 525;
     for (int i = 0; i < 9; i++) {
         if (i != 0) {
-            plat[i].x = 50 + rand() % 330;
-            templocation = plat[i - 1].y - (rand() % 23 + 60);
+            plat[i].x = 50 + dist(rd) % 330;
+            templocation = plat[i - 1].y - (dist(rd) % 23 + 60);
             if (templocation < 0) {
-                templocation = rand() % 533;
+                templocation = dist(rd) % 533;
             }
             plat[i].y = templocation;
 
         }
-        plat[i].x = 50 + rand() % 330;
+        plat[i].x = 50 + dist(rd) % 330;
         templocation = 0;
     }
     //Added random generation for all platforms.
-    platBlue[0].y = rand() % 8 + 525;
+    platBlue[0].y = dist(rd) % 8 + 525;
     for (int i = 0; i < 7; i++) {
         if (i != 0) {
-            templocation = platBlue[i - 1].y - (rand() % 23 + 60);
+            templocation = platBlue[i - 1].y - (dist(rd) % 23 + 60);
             if (templocation < 0) {
-                templocation = rand() % 533;
+                templocation = dist(rd) % 533;
             }
             platBlue[i].y = templocation;
         }
-        platBlue[i].x = 50 + rand() % 330;
+        platBlue[i].x = 50 + dist(rd) % 330;
         templocation = 0;
     }
 
 
-    platRed[0].y = rand() % 8 + 525;
+    platRed[0].y = dist(rd) % 8 + 525;
     for (int i = 0; i < 4; i++) {
         if (i != 0) {
-            templocation = platRed[i - 1].y - (rand() % 23 + 60);
+            templocation = platRed[i - 1].y - (dist(rd) % 23 + 60);
             if (templocation < 0) {
-                templocation = rand() % 533;
+                templocation = dist(rd) % 533;
             }
             platRed[i].y = templocation;
         }
-        platRed[i].x = 50 + rand() % 330;
+        platRed[i].x = 50 + dist(rd) % 330;
         templocation = 0;
 
     }
 
-    platYellow[0].y = rand() % 8 + 525;
+    platYellow[0].y = dist(rd) % 8 + 525;
     for (int i = 0; i < 3; i++) {
         if (i != 0) {
-            templocation = platYellow[i - 1].y - (rand() % 23 + 60);
+            templocation = platYellow[i - 1].y - (dist(rd) % 23 + 60);
             if (templocation < 0) {
-                templocation = rand() % 533;
+                templocation = dist(rd) % 533;
             }
             platYellow[i].y = templocation;
         }
-        platYellow[i].x = 50 + rand() % 330;
+        platYellow[i].x = 50 + dist(rd) % 330;
         templocation = 0;
 
     }
@@ -183,9 +191,46 @@ int gameScreen::Run(sf::RenderWindow &App)
     Clock spawnClock; //starts clock for pickups
     TextureHolder textureHolder; //Holds all the textures in this file
 
-    //speed up game with collectibles
+    //Winters Code
+    //music note collection counter for game speed
     int musicNum = 0;
     int tempNum = -1;
+
+    musicStuff playMeSomeTunes;
+    Clock soundCheck;
+    int tempSec = -1;
+    int otherSec = -1;
+    int sec = 0;
+    bool timeSame = false;
+    bool singleUse = true;
+    bool singleUse1 = true;
+
+
+    //jump sound effects
+    SoundBuffer buffer;
+    buffer.loadFromFile("../cmake_modules/Music/jump.wav");
+    Sound jumpSound;
+    jumpSound.setBuffer(buffer);
+    int jumpSec = 0;
+    Clock jumpClock;
+
+    //collection sound effect
+    SoundBuffer buffer2;
+    buffer2.loadFromFile("../cmake_modules/Music/harp.wav");
+    Sound collectSound;
+    collectSound.setBuffer(buffer2);
+    int collectSec = 0;
+    Clock collectClock;
+    //
+
+    //death sound effect
+    SoundBuffer buffer3;
+    buffer3.loadFromFile("../cmake_modules/Music/death.wav");
+    Sound deathSound;
+    deathSound.setBuffer(buffer3);
+    int deathSec = 0;
+    Clock deathClock;
+    //
 
     while(App.isOpen())
     {
@@ -297,32 +342,64 @@ int gameScreen::Run(sf::RenderWindow &App)
         if (score <= 50) {
             for (int i = 0; i < 9; i++) {
                 if ((x + 50 > plat[i].x) && (x + 10 < plat[i].x + 68)
-                    && (y + 50 > plat[i].y) && (y + 50 < plat[i].y + 14) && (dy > 0))
+                    && (y + 50 > plat[i].y) && (y + 50 < plat[i].y + 14) && (dy > 0)) {
                     dy = -11;
+                    //Winters Code
+                    Time jumpTime = jumpClock.getElapsedTime();
+                    jumpSec = jumpTime.asMilliseconds();
+                    if (jumpSec > 50){
+                        jumpSound.play();
+                        jumpClock.restart();
+                    }
+                }
             }
         }
         if (score <= 210 && score > 50) {
 
             for (int i = 0; i < 7; i++) {
                 if ((x + 50 > platBlue[i].x) && (x + 10 < platBlue[i].x + 68)
-                    && (y + 50 > platBlue[i].y) && (y + 50 < platBlue[i].y + 14) && (dy > 0))
+                    && (y + 50 > platBlue[i].y) && (y + 50 < platBlue[i].y + 14) && (dy > 0)) {
                     dy = -11;
+                    //Winters Code
+                    Time jumpTime = jumpClock.getElapsedTime();
+                    jumpSec = jumpTime.asMilliseconds();
+                    if (jumpSec > 50){
+                        jumpSound.play();
+                        jumpClock.restart();
+                    }
+                }
             }
         }
 
         if (score > 210 && score <= 260) {
             for (int i = 0; i < 4; i++) {
                 if ((x + 50 > platRed[i].x) && (x + 10 < platRed[i].x + 68)
-                    && (y + 50 > platRed[i].y) && (y + 50 < platRed[i].y + 14) && (dy > 0))
+                    && (y + 50 > platRed[i].y) && (y + 50 < platRed[i].y + 14) && (dy > 0)) {
                     dy = -11;
+                    //Winters Code
+                    Time jumpTime = jumpClock.getElapsedTime();
+                    jumpSec = jumpTime.asMilliseconds();
+                    if (jumpSec > 50){
+                        jumpSound.play();
+                        jumpClock.restart();
+                    }
+                }
             }
         }
         if (score > 260) {
 
             for (int i = 0; i < 3; i++) {
                 if ((x + 50 > platYellow[i].x) && (x + 10 < platYellow[i].x + 68)
-                    && (y + 50 > platYellow[i].y) && (y + 50 < platYellow[i].y + 14) && (dy > 0))
+                    && (y + 50 > platYellow[i].y) && (y + 50 < platYellow[i].y + 14) && (dy > 0)) {
                     dy = -11;
+                    //Winters Code
+                    Time jumpTime = jumpClock.getElapsedTime();
+                    jumpSec = jumpTime.asMilliseconds();
+                    if (jumpSec > 50) {
+                        jumpSound.play();
+                        jumpClock.restart();
+                    }
+                }
             }
         }
 
@@ -364,7 +441,7 @@ int gameScreen::Run(sf::RenderWindow &App)
 
         //// Enemy Handling ////
 
-        //int interval = 10+(rand()%(30-10+1));
+        //int interval = 10+(dist(rd)%(30-10+1));
         float interval = 11;
 
         if (timeSteps <= interval+1 && timeSteps >= interval-1){
@@ -411,7 +488,7 @@ int gameScreen::Run(sf::RenderWindow &App)
                     spinCounter += 1;
                 }
                 float distance = sqrt(pow(enemyX-x,2)+pow(enemyY-y,2));
-                if(distance >= 120 && spinStart == false) {
+                if(distance >= 140 && spinStart == false) {
                     float ang = atan2(offsetY, offsetX) * (180 / 3.1415926);
                     if (x > enemyX) {
                         enemy.setTexture(textureHolder.GetTexture("../cmake_modules/Images/guitarGuy.png"));
@@ -450,6 +527,19 @@ int gameScreen::Run(sf::RenderWindow &App)
                     bulletPresent = false;
                 }
                 if (Collision::PixelPerfect(currentSprite, bull.bulletSprite)) {
+                    ofstream outputHighScore;
+                    outputHighScore.open("../cmake_modules/Local_Game_Data/HighScore.txt");
+                    if (score > highScore) {
+                        outputHighScore << (int) score;
+                    } else {
+                        outputHighScore << highScore;
+                    }
+                    outputHighScore.close();
+
+                    ofstream outputScore;
+                    outputScore.open("../cmake_modules/Local_Game_Data/Score.txt");
+                    outputScore << (int) score;
+                    outputScore.close();
                     score = 0.f;
                     return (2);
                 }
@@ -473,6 +563,19 @@ int gameScreen::Run(sf::RenderWindow &App)
                 }
                 App.draw(bull.bulletSprite);
                 if (Collision::PixelPerfect(currentSprite, bull.bulletSprite)) {
+                    ofstream outputHighScore;
+                    outputHighScore.open("../cmake_modules/Local_Game_Data/HighScore.txt");
+                    if (score > highScore) {
+                        outputHighScore << (int) score;
+                    } else {
+                        outputHighScore << highScore;
+                    }
+                    outputHighScore.close();
+
+                    ofstream outputScore;
+                    outputScore.open("../cmake_modules/Local_Game_Data/Score.txt");
+                    outputScore << (int) score;
+                    outputScore.close();
                     score = 0.f;
                     return (2);
                 }
@@ -481,6 +584,19 @@ int gameScreen::Run(sf::RenderWindow &App)
         if (enemyPresent){
             App.draw(enemy);
             if (Collision::PixelPerfect(currentSprite,enemy)){
+                ofstream outputHighScore;
+                outputHighScore.open("../cmake_modules/Local_Game_Data/HighScore.txt");
+                if (score > highScore) {
+                    outputHighScore << (int) score;
+                } else {
+                    outputHighScore << highScore;
+                }
+                outputHighScore.close();
+
+                ofstream outputScore;
+                outputScore.open("../cmake_modules/Local_Game_Data/Score.txt");
+                outputScore << (int) score;
+                outputScore.close();
                 score = 0.f;
                 return(2);
             }
@@ -520,6 +636,13 @@ int gameScreen::Run(sf::RenderWindow &App)
                      */
 
                     spawnClock.restart(); //time resets when there is a collision
+                    musicNum += 1;
+                    Time collectTime = collectClock.getElapsedTime();
+                    collectSec = collectTime.asMilliseconds();
+                    if (collectSec > 50){
+                        collectSound.play();
+                        collectClock.restart();
+                    }
                 }
             }
             else if (spawnTime.asSeconds() > 10)
@@ -529,16 +652,79 @@ int gameScreen::Run(sf::RenderWindow &App)
         }
         if (y > 613)
         {
+            ofstream outputHighScore;
+            outputHighScore.open("../cmake_modules/Local_Game_Data/HighScore.txt");
+            if (score > highScore) {
+                outputHighScore << (int) score;
+            } else {
+                outputHighScore << highScore;
+            }
+            outputHighScore.close();
+
+            ofstream outputScore;
+            outputScore.open("../cmake_modules/Local_Game_Data/Score.txt");
+            outputScore << (int) score;
+            outputScore.close();
             score = 0.f;
             return(2);
         }
         App.display();
+
+        //Winters Code
 
         if(musicNum > tempNum && max_FPS < 120.0) {
             tempNum = musicNum;
             max_FPS += 5.0;
             App.setFramerateLimit(max_FPS);
         }
+
+        Time soundTime = soundCheck.getElapsedTime();
+        sec = soundTime.asSeconds();
+
+
+        if(tempSec == sec){
+            timeSame = true;
+        }
+
+        if(musicNum == 3 && singleUse == true){
+            sec = 0;
+            otherSec = 0;
+            singleUse = false;
+            tempSec = sec;
+            otherSec = playMeSomeTunes.playMusic(sec,timeSame,musicNum);
+
+        }
+        if(musicNum == 6 && singleUse1 == true){
+            sec = 0;
+            otherSec = 0;
+            singleUse1 = false;
+            tempSec = sec;
+            otherSec = playMeSomeTunes.playMusic(sec,timeSame,musicNum);
+
+        }
+        if(musicNum == 9 && singleUse1 == true){
+            sec = 0;
+            otherSec = 0;
+            singleUse1 = false;
+            tempSec = sec;
+            otherSec = playMeSomeTunes.playMusic(sec,timeSame,musicNum);
+
+        }
+        if (timeSame == true && sec != tempSec) {
+
+            tempSec = sec;
+            otherSec = playMeSomeTunes.playMusic(sec,timeSame,musicNum);
+
+            timeSame = false;
+        }
+        if(timeSame == false){
+            tempSec = sec;
+            otherSec = playMeSomeTunes.playMusic(sec,timeSame,musicNum);
+        }
+        if(otherSec == 0 && timeSame == false){
+            soundCheck.restart();
+        }
+        otherSec = -1;
     }
 }
 
