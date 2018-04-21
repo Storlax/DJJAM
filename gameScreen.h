@@ -1,5 +1,5 @@
 //
-// Created by Nick on 4/13/2018.
+// Created by miami on 4/13/2018.
 //
 
 #ifndef DJJAM_GAMESCREEN_H
@@ -14,12 +14,19 @@
 #include "collision.h"
 #include "Pickup.h"
 #include "TextureHolder.h"
+#include <random>
 
 #include <SFML/Graphics.hpp>
 #include <cmath>
 //TODO: ADD FUNCTION FOR PLATFORM GENERATION (including initial platform) AND GAME SPEED BASED ON SCORE
-//
+
 struct point { int x, y; };
+
+static int randNum(int min, int max){
+    random_device rd;
+    uniform_int_distribution<int> dist(1, max);
+    return min+dist(rd)%max;
+}
 
 using namespace std;
 using namespace sf;
@@ -35,8 +42,8 @@ public:
     virtual int Run(sf::RenderWindow &App);
     void setScore();
     void setFont();
-
-    float enemyX = 100+(rand()%(300-100+1));
+    float enemyX;
+    int newType = randNum(1,3);
     float enemyRelativeX = enemyX;
     float currentAngle = 0;
     float shootTimer = 0;
@@ -61,16 +68,18 @@ int gameScreen::Run(sf::RenderWindow &App)
     score = 0;
 
     App.setFramerateLimit(max_FPS);
-
     max_FPS = 60;
 
     setFont();
     setScore();
 
+    //We need real randomness
+    random_device rd;
+    uniform_int_distribution<int> dist(1, 450);
+
     //loads textures from files, duhhh
     Texture t1, t2, t3, t4, t5;
-
-    t1.loadFromFile("../cmake_modules/Images/background.png");
+    t1.loadFromFile("../cmake_modules/Images/backgroundColor.png");
     t2.loadFromFile("../cmake_modules/Images/platform.png");
     t3.loadFromFile("../cmake_modules/Images/platformblue.png");
     t4.loadFromFile("../cmake_modules/Images/platformred.png");
@@ -78,6 +87,7 @@ int gameScreen::Run(sf::RenderWindow &App)
 
     //Enemy stuff
     float enemyY = -80;
+    enemyX = 100+(dist(rd)%(300-100+1));
     bool enemyPresent = false;
     bool bulletPresent = false;
     float unitVector;
@@ -85,10 +95,10 @@ int gameScreen::Run(sf::RenderWindow &App)
     float offsetY;
     enemy newEnemy;
     Bullet bull;
-    int newType = newEnemy.enemyType;
-    Sprite enemy = newEnemy.enemyRight;
+    Sprite enemy = newEnemy.setBehavior(newType);
     float rotation = 0;
-    srand(time(reinterpret_cast<time_t *>(NULL)));
+    //srand(time(reinterpret_cast<time_t *>(NULL)));
+
 
     //Platform stuff
     point plat[9];
@@ -110,7 +120,7 @@ int gameScreen::Run(sf::RenderWindow &App)
         plat[i].x = 50 + rand() % 330;
         templocation = 0;
     }
-//Added random generation for all platforms.
+    //Added random generation for all platforms.
     platBlue[0].y = rand() % 8 + 525;
     for (int i = 0; i < 7; i++) {
         if (i != 0) {
@@ -161,7 +171,7 @@ int gameScreen::Run(sf::RenderWindow &App)
     //Instantiate our player class
     Player player;
 
-    //initializes our sprites
+    //Initialize our sprites
     Sprite sBackground(t1), sPlat(t2), sPlatBlue(t3), sPlatRed(t4), sPlatYellow(t5);
     Sprite currentSprite = player.setSpriteL();
 
@@ -228,41 +238,35 @@ int gameScreen::Run(sf::RenderWindow &App)
                 plat[i].y = plat[i].y - dy;
                 if (plat[i].y > 533) {
                     plat[i].y = 0;
-                    plat[i].x = 50 + rand() % 330;
+                    plat[i].x = 50+ dist(rd) % 330;
                 }
             }
-
             for (int i = 0; i < 7; i++) {
                 y = h;
                 score += .01;
                 platBlue[i].y = platBlue[i].y - dy;
                 if (platBlue[i].y > 533) {
                     platBlue[i].y = 0;
-                    platBlue[i].x = 50 + rand() % 330;
+                    platBlue[i].x = 50 + dist(rd) % 330;
                 }
-
             }
-
             for (int i = 0; i < 3; i++) {
                 y = h;
                 score += .01;
                 platRed[i].y = platRed[i].y - dy;
                 if (platRed[i].y > 533) {
                     platRed[i].y = 0;
-                    platRed[i].x = 50 + rand() % 330;
+                    platRed[i].x = 50 + dist(rd) % 330;
                 }
-
             }
-
             for (int i = 0; i < 3; i++) {
                 y = h;
                 score += .01;
                 platYellow[i].y = platYellow[i].y - dy;
                 if (platYellow[i].y > 533) {
                     platYellow[i].y = 0;
-                    platYellow[i].x = 50 + rand() % 330;
+                    platYellow[i].x = 50 + dist(rd) % 330;
                 }
-
             }
         }
 
@@ -271,48 +275,45 @@ int gameScreen::Run(sf::RenderWindow &App)
             enemyPresent = false;
             timeSteps = 0;
             enemyY = -40;
-            srand(static_cast<unsigned int>(time(nullptr)));
-            enemyX = 50+(rand()%(300-50+1));
+            //srand(static_cast<unsigned int>(time(nullptr)));
+            enemyX = 50+(dist(rd)%(300-50+1));
             enemyRelativeX = enemyX;
-            newType = 1+(rand()%(3));
-            newEnemy.setBehavior(newType);
+            newType = randNum(1,3);
+            cout<<newType;
+            enemy = newEnemy.setBehavior(newType);
             shootTimer = 0;
             bull.distanceTraveled = 0;
             rotation = 0;
         }
 
-        if (score < 50) {
-
+        if (score <= 50) {
             for (int i = 0; i < 9; i++) {
-                if ((x + 50 > plat[i].x) && (x + 20 < plat[i].x + 68)
-                    && (y + 70 > plat[i].y) && (y + 70 < plat[i].y + 14) && (dy > 0))
+                if ((x + 50 > plat[i].x) && (x + 10 < plat[i].x + 68)
+                    && (y + 50 > plat[i].y) && (y + 50 < plat[i].y + 14) && (dy > 0))
                     dy = -11;
             }
         }
-
-        if (score < 210 && score > 40) {
+        if (score <= 210 && score > 50) {
 
             for (int i = 0; i < 7; i++) {
-                if ((x + 50 > platBlue[i].x) && (x + 20 < platBlue[i].x + 68)
-                    && (y + 70 > platBlue[i].y) && (y + 70 < platBlue[i].y + 14) && (dy > 0))
+                if ((x + 50 > platBlue[i].x) && (x + 10 < platBlue[i].x + 68)
+                    && (y + 50 > platBlue[i].y) && (y + 50 < platBlue[i].y + 14) && (dy > 0))
                     dy = -11;
             }
         }
 
-        if (score > 200) {
-
+        if (score > 210 && score <= 260) {
             for (int i = 0; i < 4; i++) {
-                if ((x + 50 > platRed[i].x) && (x + 20 < platRed[i].x + 68)
-                    && (y + 70 > platRed[i].y) && (y + 70 < platRed[i].y + 14) && (dy > 0))
+                if ((x + 50 > platRed[i].x) && (x + 10 < platRed[i].x + 68)
+                    && (y + 50 > platRed[i].y) && (y + 50 < platRed[i].y + 14) && (dy > 0))
                     dy = -11;
             }
         }
-
         if (score > 260) {
 
             for (int i = 0; i < 3; i++) {
-                if ((x + 50 > platYellow[i].x) && (x + 20 < platYellow[i].x + 68)
-                    && (y + 70 > platYellow[i].y) && (y + 70 < platYellow[i].y + 14) && (dy > 0))
+                if ((x + 50 > platYellow[i].x) && (x + 10 < platYellow[i].x + 68)
+                    && (y + 50 > platYellow[i].y) && (y + 50 < platYellow[i].y + 14) && (dy > 0))
                     dy = -11;
             }
         }
@@ -322,21 +323,34 @@ int gameScreen::Run(sf::RenderWindow &App)
 
         //Draw everything on screen
         App.draw(sBackground);
+
         App.draw(currentSprite);
 
         m_score.setString("score: " + std::to_string((int)score));
         App.draw(m_score);
 
-        if (score < 50) {
+        if (score <= 50) {
             for (int i = 0; i < 9; i++) {
                 sPlat.setPosition(plat[i].x, plat[i].y);
                 App.draw(sPlat);
             }
         }
-        if (score > 40 && score < 208) {
+        if (score > 50 && score <= 210) {
             for (int i = 0; i < 7; i++) {
                 sPlatBlue.setPosition(platBlue[i].x, platBlue[i].y);
                 App.draw(sPlatBlue);
+            }
+        }
+        if (score > 210 && score <= 260) {
+            for (int i = 0; i < 7; i++) {
+                sPlatRed.setPosition(platRed[i].x, platRed[i].y);
+                App.draw(sPlatRed);
+            }
+        }
+        if (score > 260) {
+            for (int i = 0; i < 7; i++) {
+                sPlatRed.setPosition(platRed[i].x, platRed[i].y);
+                App.draw(sPlatRed);
             }
         }
 
@@ -366,7 +380,6 @@ int gameScreen::Run(sf::RenderWindow &App)
                     offsetX = x- enemyX;
                     offsetY = y- enemyY;
                     bulletPresent = true;
-                    shootTimer = 0;
                 }
             } //Boomerang drumstick enemy
             else if(newType == 3){
@@ -381,7 +394,6 @@ int gameScreen::Run(sf::RenderWindow &App)
                     shootTimer = 0;
                 }
             }
-
         }
         if (bulletPresent == true) {
             //Music Notes
@@ -465,15 +477,12 @@ int gameScreen::Run(sf::RenderWindow &App)
 
                     spawnClock.restart(); //time resets when there is a collision
                 }
-
             }
             else if (spawnTime.asSeconds() > 10)
             {
                 spawnClock.restart(); //resets spawnClock so if statement can work again
             }
         }
-
-
         if (y > 613)
         {
             score = 0.f;
@@ -488,6 +497,5 @@ int gameScreen::Run(sf::RenderWindow &App)
         }
     }
 }
-
 
 #endif //DJJAM_GAMESCREEN_H

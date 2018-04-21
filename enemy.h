@@ -10,12 +10,13 @@
 using namespace sf;
 
 class enemy{
+private:
+    Texture t1,t2,t3;
 public:
-    Texture t3;
     Sprite enemyRight;
     int enemyType;
     enemy();
-    void setBehavior(int newType);
+    Sprite setBehavior(int newType);
 };
 
 #endif //DJJAM_ENEMY_H

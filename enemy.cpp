@@ -4,34 +4,22 @@
 #include "enemy.h"
 
 enemy::enemy(){
-    enemyType = 1+(rand()%(3));
-    std::cout<<enemyType;
-    if (enemyType == 1) {
-        t3.loadFromFile("../cmake_modules/Images/FlamingSkull.png");
-        enemyRight.setTexture(t3, true);
-    }
-    else if (enemyType == 2){
-        t3.loadFromFile("../cmake_modules/Images/pianoGuy.png");
-        enemyRight.setTexture(t3, true);
-    }
-    else if (enemyType == 3){
-        t3.loadFromFile("../cmake_modules/Images/drumGuy.png");
-        enemyRight.setTexture(t3, true);
-    }
-
+    t1.loadFromFile("../cmake_modules/Images/FlamingSkull.png");
+    t2.loadFromFile("../cmake_modules/Images/pianoGuy.png");
+    t3.loadFromFile("../cmake_modules/Images/drumGuy.png");
 }
 
-void enemy::setBehavior(int newType) {
+Sprite enemy::setBehavior(int newType) {
     if (newType == 1) {
-        t3.loadFromFile("../cmake_modules/Images/FlamingSkull.png");
-        enemyRight.setTexture(t3, true);
+        Sprite enemyT(t1);
+        return enemyT;
     }
     else if (newType == 2){
-        t3.loadFromFile("../cmake_modules/Images/pianoGuy.png");
-        enemyRight.setTexture(t3, true);
+        Sprite enemyT(t2);
+        return enemyT;
     }
-    else if (enemyType == 3){
-        t3.loadFromFile("../cmake_modules/Images/drumGuy.png");
-        enemyRight.setTexture(t3, true);
+    else if (newType == 3){
+        Sprite enemyT(t3);
+        return enemyT;
     }
 }
