@@ -20,10 +20,10 @@
 #include <SFML/Graphics.hpp>
 #include "SFML/Audio.hpp"
 #include <cmath>
-//TODO: ADD FUNCTION FOR PLATFORM GENERATION (including initial platform) AND GAME SPEED BASED ON SCORE
 
 struct point { int x, y; };
 
+//C++ 11 random stuff, need to avoid the psuedo-random old rand()
 static int randNum(int min, int max){
     random_device rd;
     uniform_int_distribution<int> dist(1, max);
@@ -41,6 +41,7 @@ private:
     float score = 0.f;
     float timeSteps = 0;
 public:
+    //Lots of variables because lots of things going on that need to be changed constantly
     virtual int Run(sf::RenderWindow &App);
     void setScore();
     void setFont();
@@ -60,13 +61,14 @@ public:
     bool pickupPresent = false;
     Clock platRedClock;
     Clock platYellowClock;
-
 };
 
+//...Set the font
 void gameScreen::setFont() {
     m_font.loadFromFile("../cmake_modules/Images/OpenSans-Regular.ttf");
 }
 
+//Use the font and set the score
 void gameScreen::setScore() {
     m_score.setFont(m_font);
     m_score.setCharacterSize(35);
@@ -78,6 +80,7 @@ int gameScreen::Run(sf::RenderWindow &App)
 {
     score = 0;
 
+    //Save the highscore
     ifstream inputHighScore;
     inputHighScore.open("../cmake_modules/Local_Game_Data/HighScore.txt");
     inputHighScore >> highScore;
@@ -128,6 +131,7 @@ int gameScreen::Run(sf::RenderWindow &App)
     point platRed[7];
     point platYellow[8];
 
+    //Added random generation for all platforms, for each of the 4 different types of platforms
     plat[0].y = dist(rd) % 8 + 525;
     for (int i = 0; i < 9; i++) {
         if (i != 0) {
@@ -142,7 +146,7 @@ int gameScreen::Run(sf::RenderWindow &App)
         plat[i].x = 50 + dist(rd) % 330;
         templocation = 0;
     }
-    //Added random generation for all platforms.
+
     platBlue[0].y = dist(rd) % 8 + 525;
     for (int i = 0; i < 7; i++) {
         if (i != 0) {
@@ -155,7 +159,6 @@ int gameScreen::Run(sf::RenderWindow &App)
         platBlue[i].x = 50 + dist(rd) % 330;
         templocation = 0;
     }
-
 
     platRed[0].y = dist(rd) % 8 + 525;
     for (int i = 0; i < 7; i++) {
@@ -201,12 +204,12 @@ int gameScreen::Run(sf::RenderWindow &App)
     Clock spawnClock; //starts clock for pickups
     TextureHolder textureHolder; //Holds all the textures in this file
 
-
     //Winters Code
     //music note collection counter for game speed
     int musicNum = 0;
     int tempNum = -1;
 
+    //Music variables
     musicStuff playMeSomeTunes;
     Clock soundCheck;
     int tempSec = -1;
@@ -241,7 +244,6 @@ int gameScreen::Run(sf::RenderWindow &App)
     deathSound.setBuffer(buffer3);
     int deathSec = 0;
     Clock deathClock;
-    //
 
     while(App.isOpen())
     {
@@ -295,6 +297,7 @@ int gameScreen::Run(sf::RenderWindow &App)
                     timeSteps += .01;
                 }
             }
+            //Make each of the platforms move down, since they all have that behavior
             for (int i = 0; i < 9; i++) {
                 y = h;
                 score += .01;
@@ -352,13 +355,16 @@ int gameScreen::Run(sf::RenderWindow &App)
             bull.bulletSprite.setOrigin(0,0);
         }
         if(pickupY > 540){
+            //reset everything for the next pickup
             pickupPresent = false;
             pickupY = -40;
             pickupX = 50+(dist(rd)%(300-50+1));
             pickupCounter = 0;
         }
 
+        //Different platforms at different times while playing
         Time platTime = platRedClock.getElapsedTime();
+        //Spawn each of the different types at their respective time to be spawned
         if (platTime.asSeconds() < 10) {
             for (int i = 0; i < 9; i++) {
                 if ((x + 50 > plat[i].x) && (x + 10 < plat[i].x + 68)
@@ -421,8 +427,8 @@ int gameScreen::Run(sf::RenderWindow &App)
             }
         }
 
+        //Set the player's postion
         currentSprite.setPosition(x,y);
-
 
         //Draw everything on screen
         App.draw(sBackground);
@@ -432,6 +438,7 @@ int gameScreen::Run(sf::RenderWindow &App)
         m_score.setString("score: " + std::to_string((int)score));
         App.draw(m_score);
 
+        //Actual behavior for the platforms
         if (platTime.asSeconds() < 10) {
             for (int i = 0; i < 9; i++) {
                 sPlat.setPosition(plat[i].x, plat[i].y);
@@ -444,6 +451,7 @@ int gameScreen::Run(sf::RenderWindow &App)
                 App.draw(sPlatBlue);
             }
         }
+        //Red Platforms move left to right
         if (platTime.asSeconds() >= 20 && platTime.asSeconds() <= 30 || platTime.asSeconds() > 40 && platTime.asSeconds() <=50) {
             for (int j = 0; j < 7; j++) {
                     if (platRed[j].x + 40 >= 400) {
@@ -522,6 +530,7 @@ int gameScreen::Run(sf::RenderWindow &App)
                 if (spinStart){
                     spinCounter += 1;
                 }
+                //If the player is not close, the guitar watches him/her
                 float distance = sqrt(pow(enemyX-x,2)+pow(enemyY-y,2));
                 if(distance >= 140 && spinStart == false) {
                     float ang = atan2(offsetY, offsetX) * (180 / 3.1415926);
@@ -532,7 +541,7 @@ int gameScreen::Run(sf::RenderWindow &App)
                         enemy.setTexture(textureHolder.GetTexture("../cmake_modules/Images/guitarGuyL.png"));
                         enemy.setRotation(ang);
                     }
-                }
+                }//If the player is close, it will creepily smile, and then spin like a buzzsaw
                 else{
                     if (x > enemyX) {
                         enemy.setTexture(textureHolder.GetTexture("../cmake_modules/Images/guitarGuySmile.png"));
@@ -555,12 +564,16 @@ int gameScreen::Run(sf::RenderWindow &App)
         if (bulletPresent == true) {
             //Music Notes
             if (newType == 2) {
+                //Music notes get shot right at the player
                 bull.bulletSprite.move(4 * offsetX / unitVector, 4 * offsetY / unitVector);
                 App.draw(bull.bulletSprite);
+                //Destroy the bullet if it leaves the screen
                 if (bull.bulletSprite.getPosition().x >= 400 || bull.bulletSprite.getPosition().x <= -40
                     || bull.bulletSprite.getPosition().y >= 533 || bull.bulletSprite.getPosition().y <= -40) {
                     bulletPresent = false;
                 }
+                //If collides with player, reset the clocks, save the score if it's a high score, and move to the
+                //game over screen
                 if (Collision::PixelPerfect(currentSprite, bull.bulletSprite)) {
                     platRedClock.restart();
                     platYellowClock.restart();
@@ -582,6 +595,7 @@ int gameScreen::Run(sf::RenderWindow &App)
                 }
             } //Boomerang Drumsticks
             else if(newType == 3) {
+                //Drumsticks rotate, as if they were a boomerang
                 bull.bulletSprite.setOrigin(5,37);
                 bull.bulletSprite.setRotation(rotation);
                 rotation += 10;
@@ -599,6 +613,8 @@ int gameScreen::Run(sf::RenderWindow &App)
                     }
                 }
                 App.draw(bull.bulletSprite);
+                //If collides with player, reset the clocks, save the score if it's a high score, and move to the
+                //game over screen
                 if (Collision::PixelPerfect(currentSprite, bull.bulletSprite)) {
                     platRedClock.restart();
                     platYellowClock.restart();
@@ -621,7 +637,10 @@ int gameScreen::Run(sf::RenderWindow &App)
             }
         }
         if (enemyPresent){
+            //Draw the enemy
             App.draw(enemy);
+            //If collides with player, reset the clocks, save the score if it's a high score, and move to the
+            //game over screen
             if (Collision::PixelPerfect(currentSprite,enemy)){
                 platRedClock.restart();
                 platYellowClock.restart();
@@ -642,16 +661,18 @@ int gameScreen::Run(sf::RenderWindow &App)
                 return(2);
             }
         }
-
+        //Pickup stuff, spawn every 250 steps (like 3 seconds)
         if (!pickupPresent){
             pickupCounter += 1;
         }
         if (pickupCounter == 250) {
             pickupPresent = true;
         }
+        //Draw the pickup if it's present
         if(pickupPresent){
             pickup.setPosition(pickupX, pickupY);
             App.draw(pickup);
+            //Add to collections if player picks one up
             if (Collision::PixelPerfect(pickup, currentSprite)) {
                 musicNum += 1;
                 Time collectTime = collectClock.getElapsedTime();
@@ -667,6 +688,7 @@ int gameScreen::Run(sf::RenderWindow &App)
             }
         }
 
+        //player dies if they drop below the bottom
         if (y > 613)
         {
             platRedClock.restart();
@@ -687,10 +709,11 @@ int gameScreen::Run(sf::RenderWindow &App)
             score = 0.f;
             return(2);
         }
+        //Display everything that was drawn
         App.display();
 
         //Winters Code
-
+        //Speed up the game when collecting
         if(musicNum > tempNum && max_FPS < 120.0) {
             tempNum = musicNum;
             max_FPS += 5.0;
@@ -705,6 +728,7 @@ int gameScreen::Run(sf::RenderWindow &App)
             timeSame = true;
         }
 
+        //Speeds up when reaching 3 headphones
         if(musicNum == 3 && singleUse == true){
             sec = 0;
             otherSec = 0;
@@ -713,6 +737,7 @@ int gameScreen::Run(sf::RenderWindow &App)
             otherSec = playMeSomeTunes.playMusic(sec,timeSame,musicNum);
 
         }
+        //Speed up when reaching 6
         if(musicNum == 6 && singleUse1 == true){
             sec = 0;
             otherSec = 0;
@@ -721,6 +746,7 @@ int gameScreen::Run(sf::RenderWindow &App)
             otherSec = playMeSomeTunes.playMusic(sec,timeSame,musicNum);
 
         }
+        //Goes super saiyan when reaching 9
         if(musicNum == 9 && singleUse2 == true){
             sec = 0;
             otherSec = 0;

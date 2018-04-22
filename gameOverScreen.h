@@ -16,6 +16,7 @@ public:
 
 int gameOverScreen::Run(sf::RenderWindow &App)
 {
+    //Make the death sound play when entering the game over screen
     SoundBuffer buffer3;
     buffer3.loadFromFile("../cmake_modules/Music/death.wav");
     Sound deathSound;
@@ -25,6 +26,7 @@ int gameOverScreen::Run(sf::RenderWindow &App)
     string scoreNum;
     deathSound.play();
 
+    //Load the high score
     ifstream loadScore;
     loadScore.open("../cmake_modules/Local_Game_Data/Score.txt");
     loadScore >> scoreNum;
@@ -43,11 +45,13 @@ int gameOverScreen::Run(sf::RenderWindow &App)
     sf::Text Menu4;
     int menu = 0;
 
+    //Load all the game over screen textures
     if (!Texture.loadFromFile("../cmake_modules/Images/DJ Jump2.jpg"))
     {
         std::cerr << "Error loading presentation.gif" << std::endl;
         return (-1);
     }
+    //Load the font and set it
     Sprite.setTexture(Texture);
     if (!Font.loadFromFile("../cmake_modules/Images/stocky.ttf"))
     {
@@ -60,12 +64,14 @@ int gameOverScreen::Run(sf::RenderWindow &App)
     GameOver.setPosition({85, 50});
     GameOver.setFillColor(sf::Color::Black);
 
+    //Display the score
     scoreDisplay.setFont(Font);
     scoreDisplay.setCharacterSize(25);
     scoreDisplay.setString("Score: " + scoreNum);
     scoreDisplay.setPosition({130, 100});
     scoreDisplay.setFillColor(sf::Color::Black);
 
+    //Menu options
     Menu1.setFont(Font);
     Menu1.setCharacterSize(20);
     Menu1.setString("Play Again");
@@ -100,6 +106,7 @@ int gameOverScreen::Run(sf::RenderWindow &App)
             {
                 switch (Event.key.code)
                 {
+                    //Code to navigate the menu options
                     case sf::Keyboard::Up:
                         if (menu != 0)
                         {
@@ -135,6 +142,7 @@ int gameOverScreen::Run(sf::RenderWindow &App)
                 }
             }
         }
+        //Highlight the selected option
         if (menu == 0)
         {
             Menu1.setFillColor(sf::Color::White);

@@ -49,6 +49,7 @@ int shopScreen::Run(sf::RenderWindow &App)
         std::cerr << "Error loading stocky.ttf" << std::endl;
         return (-1);
     }
+    //Set menu font
     Menu1.setFont(Font);
     Menu1.setCharacterSize(20);
     Menu1.setString("Player Shaders");
@@ -78,6 +79,7 @@ int shopScreen::Run(sf::RenderWindow &App)
             {
                 switch (Event.key.code)
                 {
+                    //Control the menu
                     case sf::Keyboard::Up:
                         if (menu != 0)
                         {
@@ -117,6 +119,7 @@ int shopScreen::Run(sf::RenderWindow &App)
                 }
             }
         }
+        //Highlight selected option
         if (menu == 0)
         {
             Menu1.setFillColor(sf::Color::White);
@@ -148,6 +151,13 @@ int shopScreen::Run(sf::RenderWindow &App)
         App.display();
     }
 }
+
+/*
+ *  Each of these next shop screens are the same thing, just for different textures. We have a player skins and enemy skins.
+ *  The basic menu functions are the same, and all of them just use our apply function in order to apply the skin.
+ *  The selections are saved into text files in order for the preferences to be saved for when the user runs the program
+ *  in the future
+ */
 
 int shopScreen::ShopPlayerSkins(sf::RenderWindow &App)
 {
@@ -183,6 +193,7 @@ int shopScreen::ShopPlayerSkins(sf::RenderWindow &App)
         std::cerr << "Error loading stocky.ttf" << std::endl;
         return (-1);
     }
+    //Set the items available for selection. It's pretty repititive and self-explanatory
     Item1.setFont(Font);
     Item1.setCharacterSize(20);
     Item1.setString("Apply Skin");
@@ -255,6 +266,7 @@ int shopScreen::ShopPlayerSkins(sf::RenderWindow &App)
                         }
                         break;
                     case sf::Keyboard::Return:
+                        //Apply the selected model and save it to the text file for the future
                         if (itemSelect == 0)
                         {
                             ofstream selectPlayerModel;
@@ -357,6 +369,7 @@ int shopScreen::ShopPlayerSkins(sf::RenderWindow &App)
     }
 }
 
+//Same functionality for player skin shop, see comments there for code clarification
 int shopScreen::ShopEnemySkins(sf::RenderWindow &App)
 {
     sf::Event Event;
@@ -380,6 +393,7 @@ int shopScreen::ShopEnemySkins(sf::RenderWindow &App)
         std::cerr << "Error loading stocky.ttf" << std::endl;
         return (-1);
     }
+    //Option for each of our enemies
     Item1.setFont(Font);
     Item1.setCharacterSize(20);
     Item1.setString("Piano Guy Skins");
@@ -461,6 +475,7 @@ int shopScreen::ShopEnemySkins(sf::RenderWindow &App)
                 }
             }
         }
+        //Highlight selected item
         if (itemSelect == 0)
         {
             Item1.setFillColor(sf::Color::White);
@@ -502,6 +517,7 @@ int shopScreen::ShopEnemySkins(sf::RenderWindow &App)
         App.display();
     }
 }
+//Same functionality, see above
 int shopScreen::ShopPianoGuy(sf::RenderWindow &App)
 {
     sf::Event Event;
@@ -732,6 +748,7 @@ int shopScreen::ShopPianoGuy(sf::RenderWindow &App)
         App.display();
     }
 }
+//Repeats... yeah all of them do
 int shopScreen::ShopFlameBoi(sf::RenderWindow &App)
 {
     sf::Event Event;
@@ -962,6 +979,7 @@ int shopScreen::ShopFlameBoi(sf::RenderWindow &App)
         App.display();
     }
 }
+//Final repitition, this time for the drum guy
 int shopScreen::ShopDrumGuy(sf::RenderWindow &App)
 {
     sf::Event Event;
@@ -1170,7 +1188,6 @@ int shopScreen::ShopDrumGuy(sf::RenderWindow &App)
             Return.setFillColor(sf::Color::White);
 
         }
-
         //Clearing the screen
         App.clear();
         //Drawing

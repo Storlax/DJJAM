@@ -9,6 +9,7 @@ using namespace sf;
 
 class Pickup {
 public:
+    //Get whatever sprite it is in case we add more collectibles
     Sprite getSprite();
     Texture tp;
 };

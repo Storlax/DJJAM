@@ -11,12 +11,15 @@ namespace Collision
 {
     class BitmaskManager {
     public:
+        //Unit 8 is just a very small number. Pixel perfect collision takes a lot of memory, so it's best to use a small
+        //number to work with in order to improve program speed
         ~BitmaskManager() {
             map<const Texture*, Uint8*>::const_iterator end = Bitmasks.end();
             for (map<const Texture*, Uint8*>::const_iterator iter = Bitmasks.begin(); iter!=end; iter++)
                 delete [] iter->second;
         }
 
+        //We're going to go pixel by pixel
         Uint8 GetPixel (const sf::Uint8* mask, const sf::Texture* tex, unsigned int x, unsigned int y) {
             if (x>tex->getSize().x||y>tex->getSize().y)
                 return 0;
@@ -24,6 +27,7 @@ namespace Collision
             return mask[x+y*tex->getSize().x];
         }
 
+        //Get the mask of the texture as a starting point for the collision
         Uint8* GetMask (const Texture* tex) {
             Uint8 *mask;
             auto pair = Bitmasks.find(tex);
@@ -36,6 +40,7 @@ namespace Collision
             return mask;
         }
 
+        //Set the mask that we just got in the last block of code
         Uint8* CreateMask (const Texture* tex, const Image& img) {
             Uint8* mask = new Uint8[tex->getSize().y*tex->getSize().x];
 

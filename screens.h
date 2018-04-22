@@ -55,6 +55,7 @@ void screens::initialize() {
     //Main loop
     while (screenNumber >= 0 )
     {
+        //Each screen number is a different screen: 0 is main menu, 1 is game, etc.
         if(screenNumber == 0)
         {
 //            cout << "first screen" << endl;

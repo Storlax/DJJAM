@@ -34,6 +34,7 @@ menuScreen::menuScreen(void)
 
 int menuScreen::Run(sf::RenderWindow &App)
 {
+    //All the variables for our "main" event... haha it's a pun
     sf::Event Event;
     bool Running = true;
     sf::Texture Texture;
@@ -46,6 +47,7 @@ int menuScreen::Run(sf::RenderWindow &App)
     sf::Text Menu4;
     int menu = 0;
 
+    //Load the title screen
     if (!Texture.loadFromFile("../cmake_modules/Images/DJ Jump.jpg"))
     {
         std::cerr << "Error loading presentation.gif" << std::endl;
@@ -58,6 +60,7 @@ int menuScreen::Run(sf::RenderWindow &App)
         std::cerr << "Error loading stocky.ttf" << std::endl;
         return (-1);
     }
+    //Set the options with respective font
     Menu1.setFont(Font);
     Menu1.setCharacterSize(20);
     Menu1.setString("Play DJJAM");
@@ -98,6 +101,7 @@ int menuScreen::Run(sf::RenderWindow &App)
             {
                 switch (Event.key.code)
                 {
+                    //Select option with keyboard
                     case sf::Keyboard::Up:
                         if (menu != 0)
                         {
@@ -144,6 +148,7 @@ int menuScreen::Run(sf::RenderWindow &App)
             alpha++;
         }
         Sprite.setColor(sf::Color(255, 255, 255, alpha / alpha_div));
+        //Highlight selected option
         if (menu == 0)
         {
             Menu1.setFillColor(sf::Color::White);
@@ -179,15 +184,6 @@ int menuScreen::Run(sf::RenderWindow &App)
         App.draw(Sprite);
         if (alpha == alpha_max)
         {
-//            if (playing)
-//            {
-//                App.draw(Menu3);
-//            }
-//            else
-//            {
-//                App.draw(Menu1);
-//            }
-//            App.draw(Menu2);
             App.draw(Menu1);
             App.draw(Menu2);
             App.draw(Menu3);

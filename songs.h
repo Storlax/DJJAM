@@ -23,6 +23,7 @@ private:
     int musicNotes;
     bool timeSame = false;
     Music backGroundGrug;
+    //Load all 11 songs we have
     string allSongs[11] = {"../cmake_modules/Music/lilZan.ogg", "../cmake_modules/Music/jCole.ogg","../cmake_modules/Music/chillBill.ogg", "../cmake_modules/Music/plugWalk.ogg","../cmake_modules/Music/kendrickLamar.ogg", "../cmake_modules/Music/ricFlair.ogg",
                            "../cmake_modules/Music/fosterThePeople.ogg","../cmake_modules/Music/andersonPaak.ogg", "../cmake_modules/Music/dram.ogg","../cmake_modules/Music/starboy.ogg","../cmake_modules/Music/ss.ogg"};
 

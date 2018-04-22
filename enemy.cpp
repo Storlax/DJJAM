@@ -4,12 +4,15 @@
 #include "enemy.h"
 
 enemy::enemy(){
+    //Save the enemy preferences to a text file so the textures are the same when re-running the program
     std::ifstream applyEnemyModel;
+    //Apply whatever model is saved in the text file (normal colors by default)
     applyEnemyModel.open("../cmake_modules/Local_Game_Data/FlamingSkullModel.txt");
     std::string flamingSkullSelect;
     applyEnemyModel >> flamingSkullSelect;
     applyEnemyModel.close();
 
+    //Each enemy has 4 different colors, load a different sprite based on what has been selected
     if (flamingSkullSelect == "BlueFlamingSkull")
     {
         t1.loadFromFile("../cmake_modules/Images/FlamingSkull_themes/FlamingSkullPur.png");
@@ -77,6 +80,7 @@ enemy::enemy(){
 
 }
 
+//Set the sprite which also sets the behavior of each specific enemy
 Sprite enemy::setBehavior(int newType) {
     if (newType == 1)
     {

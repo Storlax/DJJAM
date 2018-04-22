@@ -9,7 +9,7 @@
 #include<iostream>
 #include<fstream>
 
-//this includes the standard functions in SFML's custom namespace which saves us an assload of "sf::insertCrapHere"
+//this includes the standard functions in SFML's custom namespace which saves us an load of "sf::insertCrapHere"
 using namespace sf;
 
 class Player {
@@ -17,6 +17,7 @@ private:
     Texture playerLeft, playerRight;
     Texture background, platform;
 public:
+    //Player has different animations
     Player();
     Sprite setSpriteL();
     Sprite setSpriteR();

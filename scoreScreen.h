@@ -22,7 +22,7 @@ public:
 int scoreScreen::Run(sf::RenderWindow &App)
 {
     std::string highScoreNum;
-
+    //Load high score
     std::ifstream loadHighScore;
     loadHighScore.open("../cmake_modules/Local_Game_Data/HighScore.txt");
     loadHighScore >> highScoreNum;
@@ -38,6 +38,7 @@ int scoreScreen::Run(sf::RenderWindow &App)
     sf::Text Menu3;
     int menu = 0;
 
+    //Set the background and the font
     if (!Texture.loadFromFile("../cmake_modules/Images/DJ Jump2.jpg"))
     {
         std::cerr << "Error loading presentation.gif" << std::endl;
@@ -50,6 +51,7 @@ int scoreScreen::Run(sf::RenderWindow &App)
         return (-1);
     }
 
+    //Display the high score with our font
     highScoreDisplay.setFont(Font);
     highScoreDisplay.setCharacterSize(25);
     highScoreDisplay.setString("High Score: " + highScoreNum);
@@ -80,6 +82,7 @@ int scoreScreen::Run(sf::RenderWindow &App)
             {
                 switch (Event.key.code)
                 {
+                    //Select the menu option
                     case sf::Keyboard::Up:
                         if (menu != 0)
                         {
@@ -107,6 +110,7 @@ int scoreScreen::Run(sf::RenderWindow &App)
                 }
             }
         }
+        //Highlight selected option
         if (menu == 0)
         {
             Menu2.setFillColor(sf::Color::White);

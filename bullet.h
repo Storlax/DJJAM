@@ -18,6 +18,7 @@ public:
     void setSprite(int type);
 };
 
+//Set sprites
 void Bullet::setSprite(int newType) {
     if (newType == 2){
         t2.loadFromFile("../cmake_modules/Images/musicBullet.png");
@@ -28,8 +29,5 @@ void Bullet::setSprite(int newType) {
         bulletSprite.setTexture(t3, true);
     }
 }
-
-
-
 
 #endif //DJJAM_BULLET_H

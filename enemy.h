@@ -12,6 +12,7 @@ using namespace sf;
 
 class enemy{
 private:
+    //Different enemy textures
     Texture t1, t2, t3, t4;
 public:
     Sprite enemyRight;

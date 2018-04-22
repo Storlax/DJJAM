@@ -4,11 +4,13 @@
 #include "player.h"
 
 Player::Player() {
+    //Save player texture choices in text file
     applyPlayerModel.open("../cmake_modules/Local_Game_Data/PlayerModel.txt");
     std::string playerSelect;
     applyPlayerModel >> playerSelect;
     applyPlayerModel.close();
 
+    //Change the texture for the player based on what is selected
     if (playerSelect == "PinkSmallMellow")
     {
         playerLeft.loadFromFile("../cmake_modules/Images/smallMellow_themes/smallMellowPinkL.png");
@@ -31,6 +33,7 @@ Player::Player() {
     }
 }
 
+//Set the sprite based on what the player is inputting while playing the game
 Sprite Player::setSpriteL() {
     Sprite sPersL(playerLeft);
     return sPersL;

@@ -1,4 +1,4 @@
-//finally got this working; only took 10 hours!
+//finally got this working
 
 #include <SFML/Graphics.hpp>
 #include "screens.h"

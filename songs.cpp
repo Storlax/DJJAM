@@ -15,7 +15,7 @@ int musicStuff::playMusic(int seconds, bool sameTime, int notes) {
     timeSame = sameTime;
     sec = seconds;
 
-
+    //Change music for every 3 notes that are collected
     if(musicNotes == 3 && sec == 0){
         randomNum = 4 + rand() % 3;
         backGroundGrug.openFromFile(allSongs[randomNum]);
@@ -40,11 +40,10 @@ int musicStuff::playMusic(int seconds, bool sameTime, int notes) {
         backGroundGrug.openFromFile(allSongs[randomNum]);
         backGroundGrug.play();
     }
-
+    //Switch the song at the end of each song
+    //Sec is the time length of each song, different for each of the 11 songs we have
     if (randomNum == 0 && timeSame == false && sec == 191) {
-
         sec = 0;
-
         randomNum = rand() % 11;
         backGroundGrug.openFromFile(allSongs[randomNum]);
         backGroundGrug.play();
