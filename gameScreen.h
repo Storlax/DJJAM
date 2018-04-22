@@ -457,14 +457,15 @@ int gameScreen::Run(sf::RenderWindow &App)
                 App.draw(sPlatRed);
                 }
         }
+        //Not working so I changed it
         if (platTime.asSeconds() > 30 && platTime.asSeconds() < 40 || platTime.asSeconds() > 40 && platTime.asSeconds() < 50) {
             for (int j = 0; j < 8; j++) {
-                if (platYellow[j].y <= 0) {
-                    platAngleYellow[j] = 270;
-                } else if (platYellow[j].y <= 533) {
-                    platAngleYellow[j] = 90;
+                if (platYellow[j].x + 40 >= 400) {
+                    platAngleYellow[j] = 180;
+                } else if (platYellow[j].x <= 0) {
+                    platAngleYellow[j] = 0;
                 }
-                platYellow[j].y += 3 * sin(platAngleYellow[j]);
+                platYellow[j].x += 3 * sin(platAngleYellow[j]);
                 sPlatYellow.setPosition(platYellow[j].x, platYellow[j].y);
                 App.draw(sPlatYellow);
             }
