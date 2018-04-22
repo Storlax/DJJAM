@@ -1,4 +1,4 @@
-//finally got this working
+//finally got this to work
 
 #include <SFML/Graphics.hpp>
 #include "screens.h"
