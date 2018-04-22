@@ -338,7 +338,6 @@ int gameScreen::Run(sf::RenderWindow &App)
             enemyPresent = false;
             timeSteps = 0;
             enemyY = -40;
-            //srand(static_cast<unsigned int>(time(nullptr)));
             enemyX = 50+(dist(rd)%(300-50+1));
             enemyRelativeX = enemyX;
             newType = randNum(1,4);
