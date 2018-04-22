@@ -9,6 +9,8 @@
 #include "cScreen.h"
 
 #include <SFML/Graphics.hpp>
+#include <string>
+#include <cstring>
 
 //our menu screen
 class menuScreen : public cScreen
@@ -41,9 +43,10 @@ int menuScreen::Run(sf::RenderWindow &App)
     sf::Text Menu1;
     sf::Text Menu2;
     sf::Text Menu3;
+    sf::Text Menu4;
     int menu = 0;
 
-    if (!Texture.loadFromFile("../cmake_modules/Images/171016090659-trump-file-full-169.png"))
+    if (!Texture.loadFromFile("../cmake_modules/Images/DJ Jump.jpg"))
     {
         std::cerr << "Error loading presentation.gif" << std::endl;
         return (-1);
@@ -52,23 +55,28 @@ int menuScreen::Run(sf::RenderWindow &App)
     Sprite.setColor(sf::Color(255, 255, 255, alpha));
     if (!Font.loadFromFile("../cmake_modules/Images/stocky.ttf"))
     {
-        std::cerr << "Error loading OpenSans-Regular.ttf" << std::endl;
+        std::cerr << "Error loading stocky.ttf" << std::endl;
         return (-1);
     }
     Menu1.setFont(Font);
     Menu1.setCharacterSize(20);
     Menu1.setString("Play DJJAM");
-    Menu1.setPosition({ 100, 150 });
+    Menu1.setPosition({ 123, 310 });
 
     Menu2.setFont(Font);
     Menu2.setCharacterSize(20);
-    Menu2.setString("Exit Game");
-    Menu2.setPosition({ 100, 200 });
+    Menu2.setString("Shader Changer");
+    Menu2.setPosition({ 123, 345 });
 
     Menu3.setFont(Font);
     Menu3.setCharacterSize(20);
-    Menu3.setString("Continue");
-    Menu3.setPosition({ 280.f, 160.f });
+    Menu3.setString("High Score");
+    Menu3.setPosition({ 123, 380 });
+
+    Menu4.setFont(Font);
+    Menu4.setCharacterSize(20);
+    Menu4.setString("Exit Game");
+    Menu4.setPosition({ 123, 415 });
 
     if (playing)
     {
@@ -91,10 +99,16 @@ int menuScreen::Run(sf::RenderWindow &App)
                 switch (Event.key.code)
                 {
                     case sf::Keyboard::Up:
-                        menu = 0;
+                        if (menu != 0)
+                        {
+                            menu = menu - 1;
+                        }
                         break;
                     case sf::Keyboard::Down:
-                        menu = 1;
+                        if (menu != 3)
+                        {
+                            menu = menu + 1;
+                        }
                         break;
                     case sf::Keyboard::Return:
                         if (menu == 0)
@@ -103,12 +117,23 @@ int menuScreen::Run(sf::RenderWindow &App)
                             playing = true;
                             return (1);
                         }
-                        else
+                        else if (menu == 1)
+                        {
+                            playing = true;
+                            return (4);
+                        }
+                        else if (menu == 2)
+                        {
+                            playing = true;
+                            return (3);
+                        }
+                        else if (menu == 3)
                         {
                             return (-1);
                         }
                         break;
                     default:
+                        std::cout << "what happened ?!?!" << std::endl;
                         break;
                 }
             }
@@ -121,15 +146,31 @@ int menuScreen::Run(sf::RenderWindow &App)
         Sprite.setColor(sf::Color(255, 255, 255, alpha / alpha_div));
         if (menu == 0)
         {
-            Menu1.setFillColor(sf::Color::Red);
+            Menu1.setFillColor(sf::Color::White);
             Menu2.setFillColor(sf::Color::Black);
             Menu3.setFillColor(sf::Color::Black);
+            Menu4.setFillColor(sf::Color::Black);
         }
-        else
+        else if (menu == 1)
         {
             Menu1.setFillColor(sf::Color::Black);
-            Menu2.setFillColor(sf::Color::Red);
+            Menu2.setFillColor(sf::Color::White);
             Menu3.setFillColor(sf::Color::Black);
+            Menu4.setFillColor(sf::Color::Black);
+        }
+        else if (menu == 2)
+        {
+            Menu1.setFillColor(sf::Color::Black);
+            Menu2.setFillColor(sf::Color::Black);
+            Menu3.setFillColor(sf::Color::White);
+            Menu4.setFillColor(sf::Color::Black);
+        }
+        else if (menu == 3)
+        {
+            Menu1.setFillColor(sf::Color::Black);
+            Menu2.setFillColor(sf::Color::Black);
+            Menu3.setFillColor(sf::Color::Black);
+            Menu4.setFillColor(sf::Color::White);
         }
 
         //Clearing screen
@@ -138,19 +179,22 @@ int menuScreen::Run(sf::RenderWindow &App)
         App.draw(Sprite);
         if (alpha == alpha_max)
         {
-            if (playing)
-            {
-                App.draw(Menu3);
-            }
-            else
-            {
-                App.draw(Menu1);
-            }
+//            if (playing)
+//            {
+//                App.draw(Menu3);
+//            }
+//            else
+//            {
+//                App.draw(Menu1);
+//            }
+//            App.draw(Menu2);
+            App.draw(Menu1);
             App.draw(Menu2);
+            App.draw(Menu3);
+            App.draw(Menu4);
         }
         App.display();
     }
 }
 
 #endif //DJJAM_MENUSCREEN_H
-

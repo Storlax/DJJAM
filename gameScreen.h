@@ -45,17 +45,12 @@ public:
     float enemyX;
     int newType = randNum(1,4);
     float currentAngle = 0;
-    int platAngleRed[7];
-    int platAngleYellow[5];
     float shootTimer = 0;
     int templocation;
     float max_FPS = 60;
     float rotation = 0;
     float spinCounter = 0;
     bool spinStart = false;
-    Clock platRedClock;
-    Clock platYellowClock;
-
 
 };
 
@@ -112,62 +107,62 @@ int gameScreen::Run(sf::RenderWindow &App)
     //Platform stuff
     point plat[9];
     point platBlue[7];
-    point platRed[7];
-    point platYellow[8];
+    point platRed[4];
+    point platYellow[3];
 
-    plat[0].y = dist(rd) % 8 + 525;
+    plat[0].y = rand() % 8 + 525;
     for (int i = 0; i < 9; i++) {
         if (i != 0) {
-            plat[i].x = 50 + dist(rd) % 330;
-            templocation = plat[i - 1].y - (dist(rd) % 23 + 60);
+            plat[i].x = 50 + rand() % 330;
+            templocation = plat[i - 1].y - (rand() % 23 + 60);
             if (templocation < 0) {
-                templocation = dist(rd) % 533;
+                templocation = rand() % 533;
             }
             plat[i].y = templocation;
 
         }
-        plat[i].x = 50 + dist(rd) % 330;
+        plat[i].x = 50 + rand() % 330;
         templocation = 0;
     }
     //Added random generation for all platforms.
-    platBlue[0].y = dist(rd) % 8 + 525;
+    platBlue[0].y = rand() % 8 + 525;
     for (int i = 0; i < 7; i++) {
         if (i != 0) {
-            templocation = platBlue[i - 1].y - (dist(rd) % 23 + 60);
+            templocation = platBlue[i - 1].y - (rand() % 23 + 60);
             if (templocation < 0) {
-                templocation = dist(rd) % 533;
+                templocation = rand() % 533;
             }
             platBlue[i].y = templocation;
         }
-        platBlue[i].x = 50 + dist(rd) % 330;
+        platBlue[i].x = 50 + rand() % 330;
         templocation = 0;
     }
 
 
-    platRed[0].y = dist(rd) % 8 + 525;
-    for (int i = 0; i < 7; i++) {
+    platRed[0].y = rand() % 8 + 525;
+    for (int i = 0; i < 4; i++) {
         if (i != 0) {
-            templocation = platRed[i - 1].y - (dist(rd) % 23 + 60);
+            templocation = platRed[i - 1].y - (rand() % 23 + 60);
             if (templocation < 0) {
-                templocation = dist(rd) % 533;
+                templocation = rand() % 533;
             }
             platRed[i].y = templocation;
         }
-        platRed[i].x = 50 + dist(rd) % 330;
+        platRed[i].x = 50 + rand() % 330;
         templocation = 0;
 
     }
 
-    platYellow[0].y = dist(rd) % 8 + 525;
-    for (int i = 0; i < 8; i++) {
+    platYellow[0].y = rand() % 8 + 525;
+    for (int i = 0; i < 3; i++) {
         if (i != 0) {
-            templocation = platYellow[i - 1].y - (dist(rd) % 23 + 60);
+            templocation = platYellow[i - 1].y - (rand() % 23 + 60);
             if (templocation < 0) {
-                templocation = dist(rd) % 533;
+                templocation = rand() % 533;
             }
             platYellow[i].y = templocation;
         }
-        platYellow[i].x = 50 + dist(rd) % 330;
+        platYellow[i].x = 50 + rand() % 330;
         templocation = 0;
 
     }
@@ -259,7 +254,7 @@ int gameScreen::Run(sf::RenderWindow &App)
                     platBlue[i].x = 50 + dist(rd) % 330;
                 }
             }
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 3; i++) {
                 y = h;
                 score += .01;
                 platRed[i].y = platRed[i].y - dy;
@@ -268,7 +263,7 @@ int gameScreen::Run(sf::RenderWindow &App)
                     platRed[i].x = 50 + dist(rd) % 330;
                 }
             }
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 3; i++) {
                 y = h;
                 score += .01;
                 platYellow[i].y = platYellow[i].y - dy;
@@ -297,19 +292,16 @@ int gameScreen::Run(sf::RenderWindow &App)
             rotation = 0;
             spinCounter = 0;
             spinStart = false;
-
         }
 
-        Time platTime = platRedClock.getElapsedTime();
-
-        if (platTime.asSeconds() < 10) {
+        if (score <= 50) {
             for (int i = 0; i < 9; i++) {
                 if ((x + 50 > plat[i].x) && (x + 10 < plat[i].x + 68)
                     && (y + 50 > plat[i].y) && (y + 50 < plat[i].y + 14) && (dy > 0))
                     dy = -11;
             }
         }
-        if (platTime.asSeconds() > 10 && platTime.asSeconds() < 20) {
+        if (score <= 210 && score > 50) {
 
             for (int i = 0; i < 7; i++) {
                 if ((x + 50 > platBlue[i].x) && (x + 10 < platBlue[i].x + 68)
@@ -318,26 +310,21 @@ int gameScreen::Run(sf::RenderWindow &App)
             }
         }
 
-        if ((platTime.asSeconds() > 20 && platTime.asSeconds() < 30)|| (platTime.asSeconds() > 40 && platTime.asSeconds() < 50))
-        {
-            for (int i = 0; i < 7; i++) {
+        if (score > 210 && score <= 260) {
+            for (int i = 0; i < 4; i++) {
                 if ((x + 50 > platRed[i].x) && (x + 10 < platRed[i].x + 68)
                     && (y + 50 > platRed[i].y) && (y + 50 < platRed[i].y + 14) && (dy > 0))
                     dy = -11;
             }
         }
+        if (score > 260) {
 
-
-        if ((platTime.asSeconds() > 30 && platTime.asSeconds() <= 40) || (platTime.asSeconds() > 40 && platTime.asSeconds() < 50))
-        {
-
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 3; i++) {
                 if ((x + 50 > platYellow[i].x) && (x + 10 < platYellow[i].x + 68)
                     && (y + 50 > platYellow[i].y) && (y + 50 < platYellow[i].y + 14) && (dy > 0))
                     dy = -11;
             }
         }
-
 
         currentSprite.setPosition(x,y);
 
@@ -350,66 +337,30 @@ int gameScreen::Run(sf::RenderWindow &App)
         m_score.setString("score: " + std::to_string((int)score));
         App.draw(m_score);
 
-        if (platTime.asSeconds() < 10) {
+        if (score <= 50) {
             for (int i = 0; i < 9; i++) {
                 sPlat.setPosition(plat[i].x, plat[i].y);
                 App.draw(sPlat);
             }
         }
-        if (platTime.asSeconds() >= 10 && platTime.asSeconds() <= 20) {
+        if (score > 50 && score <= 210) {
             for (int i = 0; i < 7; i++) {
                 sPlatBlue.setPosition(platBlue[i].x, platBlue[i].y);
                 App.draw(sPlatBlue);
             }
         }
-
-        if (platTime.asSeconds() >= 20 && platTime.asSeconds() <= 30 || platTime.asSeconds() > 40 && platTime.asSeconds() <=50) {
-
-            for (int j = 0; j < 7; j++) {
-                if (platRed[j].x + 40 >= 400) {
-
-                    platAngleRed[j] = 180;
-
-                } else if (platRed[j].x <= 0) {
-
-                    platAngleRed[j] = 0;
-                }
-
-                    platRed[j].x += 3 * cos(platAngleRed[j]);
-
-                sPlatRed.setPosition(platRed[j].x, platRed[j].y);
+        if (score > 210 && score <= 260) {
+            for (int i = 0; i < 7; i++) {
+                sPlatRed.setPosition(platRed[i].x, platRed[i].y);
                 App.draw(sPlatRed);
-
             }
         }
-            if (platTime.asSeconds() > 30 && platTime.asSeconds() < 40 || platTime.asSeconds() > 40 && platTime.asSeconds() < 50) {
-
-                cout<<"hi";
-                for (int j = 0; j < 8; j++) {
-                    if (platYellow[j].y <= 0) {
-
-                        platAngleYellow[j] = 270;
-
-                    } else if (platYellow[j].y <= 533) {
-
-                        platAngleYellow[j] = 90;
-                    }
-
-                        platYellow[j].y += 3 * sin(platAngleYellow[j]);
-
-                    sPlatYellow.setPosition(platYellow[j].x, platYellow[j].y);
-                    App.draw(sPlatYellow);
-
-                }
+        if (score > 260) {
+            for (int i = 0; i < 7; i++) {
+                sPlatRed.setPosition(platRed[i].x, platRed[i].y);
+                App.draw(sPlatRed);
             }
-        if(platTime.asSeconds() > 50){
-            platRedClock.restart();
         }
-
-
-
-
-
 
         //// Enemy Handling ////
 
@@ -500,8 +451,6 @@ int gameScreen::Run(sf::RenderWindow &App)
                 }
                 if (Collision::PixelPerfect(currentSprite, bull.bulletSprite)) {
                     score = 0.f;
-                    platRedClock.restart();
-                    platYellowClock.restart();
                     return (2);
                 }
             } //Boomerang Drumsticks
@@ -525,8 +474,6 @@ int gameScreen::Run(sf::RenderWindow &App)
                 App.draw(bull.bulletSprite);
                 if (Collision::PixelPerfect(currentSprite, bull.bulletSprite)) {
                     score = 0.f;
-                    platRedClock.restart();
-                    platYellowClock.restart();
                     return (2);
                 }
             }
@@ -535,8 +482,6 @@ int gameScreen::Run(sf::RenderWindow &App)
             App.draw(enemy);
             if (Collision::PixelPerfect(currentSprite,enemy)){
                 score = 0.f;
-                platRedClock.restart();
-                platYellowClock.restart();
                 return(2);
             }
         }
@@ -574,8 +519,7 @@ int gameScreen::Run(sf::RenderWindow &App)
                      ****************Code FOR THE STAGE SPEED GOES HERE!!***************
                      */
 
-                    spawnClock.restart();
-                    musicNum += 1;//time resets when there is a collision
+                    spawnClock.restart(); //time resets when there is a collision
                 }
             }
             else if (spawnTime.asSeconds() > 10)
@@ -586,10 +530,7 @@ int gameScreen::Run(sf::RenderWindow &App)
         if (y > 613)
         {
             score = 0.f;
-            platRedClock.restart();
-            platYellowClock.restart();
             return(2);
-
         }
         App.display();
 
@@ -599,7 +540,6 @@ int gameScreen::Run(sf::RenderWindow &App)
             App.setFramerateLimit(max_FPS);
         }
     }
-
 }
 
 #endif //DJJAM_GAMESCREEN_H
