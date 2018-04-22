@@ -129,5 +129,14 @@ int musicStuff::playMusic(int seconds, bool sameTime, int notes) {
         backGroundGrug.play();
 
     }
+    else if (randomNum == 10 && timeSame == false && sec == 227) {
+
+        sec = 0;
+
+        randomNum = rand() % 11;
+        backGroundGrug.openFromFile(allSongs[randomNum]);
+        backGroundGrug.play();
+
+    }
     return sec;
 }

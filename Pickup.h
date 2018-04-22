@@ -8,34 +8,7 @@
 using namespace sf;
 
 class Pickup {
-private:
-
-    //sprites
-    Sprite m_Sprite;
-    int m_Value;
-
-    //where the sprite is
-    IntRect m_arena;
-
-
-
-    //Spawning
-    bool m_Spawned;
-
 public:
-    explicit Pickup(Sprite& sprite);
-
-    void setArena(int width, int height);
-
-    void spawn();
-
-    FloatRect getPosition();
-
     Sprite getSprite();
-
-    bool getSpawned();
-
-    void setSpawned(int num);
-
-
+    Texture tp;
 };
