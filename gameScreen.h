@@ -402,7 +402,7 @@ int gameScreen::Run(sf::RenderWindow &App)
                     bulletPresent = true;
                     shootTimer = 0;
                 }
-            } //GuitarEnemy, rotates to look at player
+            } //GuitarEnemy, rotates to look
             else if(newType == 4) {
                 enemy.setOrigin(42.5,13.5);
                 offsetX = x- enemyX;
